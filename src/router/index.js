@@ -11,34 +11,8 @@ const pageDashboard = () => import('@/views/Dashboard')
 const pageLoadProject = () => import('@/views/project/LoadProject')
 const pageSaveProject = () => import('@/views/project/SaveProject')
 
-/*
-const Colors = () => import('@/views/theme/Colors')
-const Typography = () => import('@/views/theme/Typography')
-*/
-
 // Views - TOOLS
 const pageImageFilterHisteq = () => import('@/views/imagefilters/Histeq')
-
-const Charts = () => import('@/views/charts/Charts')
-const Widgets = () => import('@/views/widgets/Widgets')
-
-// Views - Components
-const Cards = () => import('@/views/base/Cards')
-const Forms = () => import('@/views/base/Forms')
-const Switches = () => import('@/views/base/Switches')
-const Tables = () => import('@/views/base/Tables')
-const Tabs = () => import('@/views/base/Tabs')
-const Breadcrumbs = () => import('@/views/base/Breadcrumbs')
-const Carousels = () => import('@/views/base/Carousels')
-const Collapses = () => import('@/views/base/Collapses')
-const Jumbotrons = () => import('@/views/base/Jumbotrons')
-const ListGroups = () => import('@/views/base/ListGroups')
-const Navs = () => import('@/views/base/Navs')
-const Navbars = () => import('@/views/base/Navbars')
-const Paginations = () => import('@/views/base/Paginations')
-const Popovers = () => import('@/views/base/Popovers')
-const ProgressBars = () => import('@/views/base/ProgressBars')
-const Tooltips = () => import('@/views/base/Tooltips')
 
 // Views - Buttons
 const StandardButtons = () => import('@/views/buttons/StandardButtons')
@@ -109,7 +83,7 @@ function configRoutes () {
           ]
         },
         {
-          path: 'filters', redirect: '/imagefilters/histeq',
+          path: 'imagefilters', redirect: '/imagefilters/histeq',
           name: 'Filters',
           component: emptyMenuItem(),
           children: [
