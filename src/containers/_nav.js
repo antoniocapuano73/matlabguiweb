@@ -14,19 +14,19 @@ export default [
       },
       {
         _name: 'CSidebarNavTitle',
-        _children: ['Theme']
+        _children: ['Project']
       },
       {
         _name: 'CSidebarNavItem',
-        name: 'Colors',
-        to: '/theme/colors',
-        icon: 'cil-drop'
+        name: 'LoadProject',
+        to: '/project/loadproject',
+        icon: 'cil-folder-open'
       },
       {
         _name: 'CSidebarNavItem',
-        name: 'Typography',
-        to: '/theme/typography',
-        icon: 'cil-pencil'
+        name: 'SaveProject',
+        to: '/project/saveproject',
+        icon: 'cil-save'
       },
       {
         _name: 'CSidebarNavTitle',

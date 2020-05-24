@@ -2,13 +2,19 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // Containers
-const home = () => import('@/containers/TheContainer')
+const pageHome = () => import('@/containers/TheContainer')
 
-// Views
+// Views - dashboard
 const pageDashboard = () => import('@/views/Dashboard')
 
+// Views - Project
+const pageLoadProject = () => import('@/views/project/LoadProject')
+const pageSaveProject = () => import('@/views/project/SaveProject')
+
+/*
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
+*/
 
 const Charts = () => import('@/views/charts/Charts')
 const Widgets = () => import('@/views/widgets/Widgets')
@@ -75,7 +81,7 @@ function configRoutes () {
     {
       path: '/', redirect: '/dashboard',
       name: 'Home',
-      component: home,
+      component: pageHome,
       children: [
         {
           path: 'dashboard',
@@ -83,19 +89,19 @@ function configRoutes () {
           component: pageDashboard
         },
         {
-          path: 'theme', redirect: '/theme/colors',
-          name: 'Theme',
+          path: 'project', redirect: '/project/loadproject',
+          name: 'Project',
           component: emptyMenuItem(),
           children: [
             {
-              path: 'colors',
-              name: 'Colors',
-              component: Colors
+              path: 'loadproject',
+              name: 'LoadProject',
+              component: pageLoadProject
             },
             {
-              path: 'typography',
-              name: 'Typography',
-              component: Typography
+              path: 'saveproject',
+              name: 'SaveProject',
+              component: pageSaveProject
             }
           ]
         },
