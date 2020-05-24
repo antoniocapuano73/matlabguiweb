@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // Containers
-const TheContainer = () => import('@/containers/TheContainer')
+const home = () => import('@/containers/TheContainer')
 
 // Views
-const Dashboard = () => import('@/views/Dashboard')
+const pageDashboard = () => import('@/views/Dashboard')
 
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
@@ -66,26 +66,26 @@ export default new Router({
   routes: configRoutes()
 })
 
+function emptyMenuItem() {
+  return { render (c) { return c('router-view') }};
+}
+
 function configRoutes () {
   return [
     {
-      path: '/',
-      redirect: '/dashboard',
+      path: '/', redirect: '/dashboard',
       name: 'Home',
-      component: TheContainer,
+      component: home,
       children: [
         {
           path: 'dashboard',
           name: 'Dashboard',
-          component: Dashboard
+          component: pageDashboard
         },
         {
-          path: 'theme',
-          redirect: '/theme/colors',
+          path: 'theme', redirect: '/theme/colors',
           name: 'Theme',
-          component: {
-            render (c) { return c('router-view') }
-          },
+          component: emptyMenuItem(),
           children: [
             {
               path: 'colors',
@@ -136,12 +136,9 @@ function configRoutes () {
           ]
         },
         {
-          path: 'base',
-          redirect: '/base/cards',
+          path: 'base', redirect: '/base/cards',
           name: 'Base',
-          component: {
-            render (c) { return c('router-view') }
-          },
+          component: emptyMenuItem,
           children: [
             {
               path: 'cards',
