@@ -16,118 +16,62 @@ export default [
         _name: 'CSidebarNavTitle',
         _children: ['Project']
       },
+                {
+                  _name: 'CSidebarNavItem',
+                  name: 'LoadProject',
+                  to: '/project/loadproject',
+                  icon: 'cil-folder-open'
+                },
+                {
+                  _name: 'CSidebarNavItem',
+                  name: 'SaveProject',
+                  to: '/project/saveproject',
+                  icon: 'cil-save'
+                },
       {
-        _name: 'CSidebarNavItem',
-        name: 'LoadProject',
-        to: '/project/loadproject',
-        icon: 'cil-folder-open'
+        _name: 'CSidebarNavTitle',
+        _children: ['Images']
       },
-      {
-        _name: 'CSidebarNavItem',
-        name: 'SaveProject',
-        to: '/project/saveproject',
-        icon: 'cil-save'
-      },
+                {
+                  _name: 'CSidebarNavDropdown',
+                  name: 'Filters',
+                  route: '/imagefilters',
+                  icon: 'cil-puzzle',
+                  items: [
+                            {
+                              name: 'Histeq',
+                              to: '/imagefilters/histeq',
+                            }
+                  ]
+                },
       {
         _name: 'CSidebarNavTitle',
         _children: ['Components']
       },
-      {
-        _name: 'CSidebarNavDropdown',
-        name: 'Base',
-        route: '/base',
-        icon: 'cil-puzzle',
-        items: [
-          {
-            name: 'Breadcrumbs',
-            to: '/base/breadcrumbs'
-          },
-          {
-            name: 'Cards',
-            to: '/base/cards'
-          },
-          {
-            name: 'Carousels',
-            to: '/base/carousels'
-          }, 
-          {
-            name: 'Collapses',
-            to: '/base/collapses'
-          },
-          {
-            name: 'Forms',
-            to: '/base/forms'
-          },
-          {
-            name: 'Jumbotrons',
-            to: '/base/jumbotrons'
-          },
-          {
-            name: 'List Groups',
-            to: '/base/list-groups'
-          },
-          {
-            name: 'Navs',
-            to: '/base/navs'
-          },
-          {
-            name: 'Navbars',
-            to: '/base/navbars'
-          },
-          {
-            name: 'Paginations',
-            to: '/base/paginations'
-          },
-          {
-            name: 'Popovers',
-            to: '/base/popovers'
-          },
-          {
-            name: 'Progress Bars',
-            to: '/base/progress-bars'
-          },
-          {
-            name: 'Switches',
-            to: '/base/switches'
-          },
-          {
-            name: 'Tables',
-            to: '/base/tables'
-          },
-          {
-            name: 'Tabs',
-            to: '/base/tabs'
-          },
-          {
-            name: 'Tooltips',
-            to: '/base/tooltips'
-          }
-        ]
-      },
-      {
-        _name: 'CSidebarNavDropdown',
-        name: 'Buttons',
-        route: '/buttons',
-        icon: 'cil-cursor',
-        items: [
-          {
-            name: 'Buttons',
-            to: '/buttons/standard-buttons'
-          },
-          {
-            name: 'Button Dropdowns',
-            to: '/buttons/dropdowns'
-          },
-          {
-            name: 'Button Groups',
-            to: '/buttons/button-groups'
-          },
-          {
-            name: 'Brand Buttons',
-            to: '/buttons/brand-buttons'
-          }
-        ]
-      },
+                {
+                  _name: 'CSidebarNavDropdown',
+                  name: 'Buttons',
+                  route: '/buttons',
+                  icon: 'cil-cursor',
+                  items: [
+                            {
+                              name: 'Buttons',
+                              to: '/buttons/standard-buttons'
+                            },
+                            {
+                              name: 'Button Dropdowns',
+                              to: '/buttons/dropdowns'
+                            },
+                            {
+                              name: 'Button Groups',
+                              to: '/buttons/button-groups'
+                            },
+                            {
+                              name: 'Brand Buttons',
+                              to: '/buttons/brand-buttons'
+                            }
+                  ]
+                },
       {
         _name: 'CSidebarNavItem',
         name: 'Charts',

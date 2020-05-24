@@ -7,7 +7,7 @@ const pageHome = () => import('@/containers/TheContainer')
 // Views - dashboard
 const pageDashboard = () => import('@/views/Dashboard')
 
-// Views - Project
+// Views - PROJECT
 const pageLoadProject = () => import('@/views/project/LoadProject')
 const pageSaveProject = () => import('@/views/project/SaveProject')
 
@@ -15,6 +15,9 @@ const pageSaveProject = () => import('@/views/project/SaveProject')
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
 */
+
+// Views - TOOLS
+const pageImageFilterHisteq = () => import('@/views/imagefilters/Histeq')
 
 const Charts = () => import('@/views/charts/Charts')
 const Widgets = () => import('@/views/widgets/Widgets')
@@ -93,169 +96,55 @@ function configRoutes () {
           name: 'Project',
           component: emptyMenuItem(),
           children: [
-            {
-              path: 'loadproject',
-              name: 'LoadProject',
-              component: pageLoadProject
-            },
-            {
-              path: 'saveproject',
-              name: 'SaveProject',
-              component: pageSaveProject
-            }
+                    {
+                      path: 'loadproject',
+                      name: 'LoadProject',
+                      component: pageLoadProject
+                    },
+                    {
+                      path: 'saveproject',
+                      name: 'SaveProject',
+                      component: pageSaveProject
+                    }
           ]
         },
         {
-          path: 'charts',
-          name: 'Charts',
-          component: Charts
-        },
-        {
-          path: 'widgets',
-          name: 'Widgets',
-          component: Widgets
-        },
-        {
-          path: 'users',
-          meta: {
-            label: 'Users'
-          },
-          component: {
-            render(c) {
-              return c('router-view')
-            }
-          },
+          path: 'filters', redirect: '/imagefilters/histeq',
+          name: 'Filters',
+          component: emptyMenuItem(),
           children: [
-            {
-              path: '',
-              name: 'Users',
-              component: Users
-            },
-            {
-              path: ':id',
-              meta: {
-                label: 'User Details'
-              },
-              name: 'User',
-              component: User
-            }
+                    {
+                      path: 'histeq',
+                      name: 'Histeq',
+                      component: pageImageFilterHisteq
+                    }
           ]
         },
         {
-          path: 'base', redirect: '/base/cards',
-          name: 'Base',
-          component: emptyMenuItem,
-          children: [
-            {
-              path: 'cards',
-              name: 'Cards',
-              component: Cards
-            },
-            {
-              path: 'forms',
-              name: 'Forms',
-              component: Forms
-            },
-            {
-              path: 'switches',
-              name: 'Switches',
-              component: Switches
-            },
-            {
-              path: 'tables',
-              name: 'Tables',
-              component: Tables
-            },
-            {
-              path: 'tabs',
-              name: 'Tabs',
-              component: Tabs
-            },
-            {
-              path: 'breadcrumbs',
-              name: 'Breadcrumbs',
-              component: Breadcrumbs
-            },
-            {
-              path: 'carousels',
-              name: 'Carousels',
-              component: Carousels
-            },
-            {
-              path: 'collapses',
-              name: 'Collapses',
-              component: Collapses
-            },
-            {
-              path: 'jumbotrons',
-              name: 'Jumbotrons',
-              component: Jumbotrons
-            },
-            {
-              path: 'list-groups',
-              name: 'List Groups',
-              component: ListGroups
-            },
-            {
-              path: 'navs',
-              name: 'Navs',
-              component: Navs
-            },
-            {
-              path: 'navbars',
-              name: 'Navbars',
-              component: Navbars
-            },
-            {
-              path: 'paginations',
-              name: 'Paginations',
-              component: Paginations
-            },
-            {
-              path: 'popovers',
-              name: 'Popovers',
-              component: Popovers
-            },
-            {
-              path: 'progress-bars',
-              name: 'Progress Bars',
-              component: ProgressBars
-            },
-            {
-              path: 'tooltips',
-              name: 'Tooltips',
-              component: Tooltips
-            }
-          ]
-        },
-        {
-          path: 'buttons',
-          redirect: '/buttons/standard-buttons',
+          path: 'buttons', redirect: '/buttons/standard-buttons',
           name: 'Buttons',
-          component: {
-            render (c) { return c('router-view') }
-          },
+          component: emptyMenuItem(),
           children: [
-            {
-              path: 'standard-buttons',
-              name: 'Standard Buttons',
-              component: StandardButtons
-            },
-            {
-              path: 'button-groups',
-              name: 'Button Groups',
-              component: ButtonGroups
-            },
-            {
-              path: 'dropdowns',
-              name: 'Dropdowns',
-              component: Dropdowns
-            },
-            {
-              path: 'brand-buttons',
-              name: 'Brand Buttons',
-              component: BrandButtons
-            }
+                    {
+                      path: 'standard-buttons',
+                      name: 'Standard Buttons',
+                      component: StandardButtons
+                    },
+                    {
+                      path: 'button-groups',
+                      name: 'Button Groups',
+                      component: ButtonGroups
+                    },
+                    {
+                      path: 'dropdowns',
+                      name: 'Dropdowns',
+                      component: Dropdowns
+                    },
+                    {
+                      path: 'brand-buttons',
+                      name: 'Brand Buttons',
+                      component: BrandButtons
+                    }
           ]
         },
         {
