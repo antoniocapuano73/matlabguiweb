@@ -35,12 +35,12 @@ export default [
                 {
                   _name: 'CSidebarNavDropdown',
                   name: 'Filters',
-                  route: '/imagefilters',
-                  icon: 'cil-puzzle',
+                  route: '/images/filters',
+                  icon: 'cil-wallpaper',
                   items: [
                             {
                               name: 'Histeq',
-                              to: '/imagefilters/histeq',
+                              to: '/images/filters/histeq',
                             }
                   ]
                 },

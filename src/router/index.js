@@ -83,7 +83,7 @@ function configRoutes () {
           ]
         },
         {
-          path: 'imagefilters', redirect: '/imagefilters/histeq',
+          path: 'images/filters', redirect: '/images/filters/histeq',
           name: 'Filters',
           component: emptyMenuItem(),
           children: [
