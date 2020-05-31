@@ -1,28 +1,35 @@
 <template>
   <CContainer>
     <CRow>
-      <div>
-        <CButton color="primary" @click ="simulate_onClickInputImageSource">Select image</CButton><br>
-        <input type="file" name="inputImageSource" id="inputImageSource"
-          accept="image/*"
-          style="display: none"
-          @change="onImageSourceFileChanged">
-      </div>
+      <CCol Cols="6">
+        <div>
+          <CButton color="primary" @click ="simulate_onClickInputImageSource">Select image</CButton><br>
+          <input type="file" name="inputImageSource" id="inputImageSource"
+            accept="image/*"
+            style="display: none"
+            @change="onImageSourceFileChanged">
+        </div>
+      </CCol>
+      <CCol Cols="6">
+        <div>
+          <CButton color="primary" @click ="onUpload">Filter image</CButton><br>
+        </div>
+      </CCol>
     </CRow>
     <CRow>
       <p> </p>
     </CRow>
     <CRow>
       <CCol Cols="6">
-        <div>
-          <img id="imageSource" class="preview-image" alt="source image" 
+        <div class="preview-image">
+          <img id="imageSource" alt="source image" 
             @click ="simulate_onClickInputImageSource"
           >
         </div>
       </CCol>
       <CCol Cols="6">
-        <div style="border-style: solid; border-width: 1px;">
-          <img src="" alt="filtered image" >
+        <div class="preview-image">
+          <img id="destinationSource" alt="filtered image" >
         </div>
       </CCol>
     </CRow>
@@ -35,7 +42,8 @@ export default {
   name: 'Histeq',
   data: function () {
     return {
-      dataImageSource: ''
+      dataImageSource: null,
+      dataImageDestination: null
     }
   },
   methods: {
@@ -50,13 +58,30 @@ export default {
       reader.onload = function (e) {
         img.src = e.target.result;
         this.dataImageSource = e.target.result;
-        // console.log(this.dataImageSource);
+
+
+        console.log(this.dataImageSource);
       }
 
       reader.readAsDataURL(file);
     },
     onUpload() {
-      // upload file
+      console.log("this.dataImageSource: " + this.dataImageSource);
+
+      if (this.dataImageSource !== null) {
+        // upload file
+        console.log("1");
+        data = 
+          filterService.applyWP( 
+              'histeq', 
+              new ImageContentModel(this.dataImageSource));
+
+        console.log("2");
+        this.dataImageDestination = data.content;
+
+
+        console.log(this.dataImageDestination);
+      }
     }
 }
 }
