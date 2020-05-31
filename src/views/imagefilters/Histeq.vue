@@ -44,12 +44,13 @@ export default {
     },
     onImageSourceFileChanged (e) {
       const file = e.target.files[0];
-      let img = document.getElementById('imageSource')
-
+      let img    = document.getElementById('imageSource')
       let reader = new FileReader();
+
       reader.onload = function (e) {
         img.src = e.target.result;
-        dataImageSource = e.target.result; 
+        this.dataImageSource = e.target.result;
+        // console.log(this.dataImageSource);
       }
 
       reader.readAsDataURL(file);
