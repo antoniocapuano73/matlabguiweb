@@ -49,6 +49,7 @@ export default {
       let reader = new FileReader();
       reader.onload = function (e) {
         img.src = e.target.result;
+        dataImageSource = e.target.result; 
       }
 
       reader.readAsDataURL(file);
