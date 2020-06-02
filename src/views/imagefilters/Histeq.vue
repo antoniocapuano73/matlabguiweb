@@ -29,7 +29,7 @@
       </CCol>
       <CCol Cols="6">
         <div class="preview-image">
-          <img id="destinationSource" alt="filtered image" >
+          <img id="imageDestination" alt="filtered image" >
         </div>
       </CCol>
     </CRow>
@@ -37,11 +37,18 @@
 </template>
 
 <script>
-import UploadImage from 'vue-upload-image';
+// import UploadImage from 'vue-upload-image';
+import {
+  emptyFilterParams,
+  FilterModel,
+  apply
+  } from '@/api/images/FilterService.js';
+
 export default {
   name: 'Histeq',
   data: function () {
     return {
+      filterName: 'histeq',
       dataImageSource: null,
       dataImageDestination: null
     }
@@ -51,39 +58,41 @@ export default {
       document.getElementById('inputImageSource').click();
     },
     onImageSourceFileChanged (e) {
+      let that = this;
+
       const file = e.target.files[0];
       let img    = document.getElementById('imageSource')
       let reader = new FileReader();
 
       reader.onload = function (e) {
         img.src = e.target.result;
-        this.dataImageSource = e.target.result;
+        that.dataImageSource = e.target.result;
 
-
-        console.log(this.dataImageSource);
+        // console.log(that.dataImageSource);
       }
 
       reader.readAsDataURL(file);
     },
     onUpload() {
-      console.log("this.dataImageSource: " + this.dataImageSource);
+      let that = this;
 
+      // reset image destination
+      that.dataImageDestination = null;
+
+      // filter
       if (this.dataImageSource !== null) {
-        // upload file
-        console.log("1");
-        data = 
-          filterService.applyWP( 
-              'histeq', 
-              new ImageContentModel(this.dataImageSource));
 
-        console.log("2");
-        this.dataImageDestination = data.content;
+        apply(
+          new FilterModel(that.filterName,emptyFilterParams(),that.dataImageSource), 
+          function (result) {
 
+          let img = document.getElementById('imageDestination')
+          img.src = result;
+        });
 
-        console.log(this.dataImageDestination);
       }
     }
-}
+  }
 }
 
 </script>

@@ -30,7 +30,41 @@ GET api/filter/apply?FilterName=name&Image=valore
     Public Class ImageContentModel
         Public Content As String
     End Class
+
+    Public Class FilterModel
+        Public FilterName As String
+        Public FilterParams As FilterParamsModel
+        Public ImageContent As ImageContentModel
+    End Class
 */
+
+function EmptyFilterParamModel() {
+    this.name  = '';
+    this.value = '';
+}
+
+function EmptyFilterParamsModel() {
+    this.count = 0;
+    this.items = [
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel()
+    ];
+}
+
 function ImageContentModel(content) {
     this.content = String(content);
 }
@@ -40,147 +74,88 @@ function FilterParamModel(name,value) {
     this.value = String(value);
 }
 
-function FilterParamsModel(
-    name01, value01,
-    name02, value02,
-    name03, value03,
-    name04, value04,
-    name05, value05,
-    name06, value06,
-    name07, value07,
-    name08, value08,
-    name09, value09,
-    name10, value10,
-    name11, value11,
-    name12, value12,
-    name13, value13,
-    name14, value14,
-    name15, value15,
-    name16, value16
-) {
+function FilterParamsModel(filterParams) {
+    // params
+    //  [
+    //    ['name','value'],  ...
+    //    ...
+    //    ['name','value']
+    //  ]
+
+    // default return
     this.count = 0;
     this.items = [
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('',''),
-        new FilterParamsModel('','')
-    ];
-
-    let names  = [
-        name01,
-        name02,
-        name03,
-        name04,
-        name05,
-        name06,
-        name07,
-        name08,
-        name09,
-        name10,
-        name11,
-        name12,
-        name13,
-        name14,
-        name15,
-        name16
-    ];
-
-    let values = [
-        value01,
-        value02,
-        value03,
-        value04,
-        value05,
-        value06,
-        value07,
-        value08,
-        value09,
-        value10,
-        value11,
-        value12,
-        value13,
-        value14,
-        value15,
-        value16
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel(),
+        new EmptyFilterParamModel()
     ];
 
     for (let i = 0; i < 16; i++) {
-        if ((names[i] !== undefined) && (values[i] !== undefined)) {
-            this.count = i+1;
-            this.item[i].name  = String(names[i]);
-            this.item[i].value = String(values[i]);
-            this.count = 1;
+        try {
+            let filterParam = filterParams[i];
+
+            if (filterParam) {
+                filterParamName  = filterParam[0];
+                filterParamValue = filterParam[1];
+
+                if ((filterParamName) && (filterParamValue)) {
+                    this.count   = i+1;
+                    this.item[i] = 
+                        new FilterParamModel( 
+                                filterParamName,
+                                filterParamValue);
+                }
+            }
         }
-        else {
-            break;
+        catch (e) {
         }
     }
 }
 
-async function apply(filterName,filterParams,filterImageContent) {
-    var result = {};
-
-    // class -> json
-    filterParams       = JSON.stringify(filterParams);
-    filterImageContent = JSON.stringify(filterImageContent);
-
-    const baseURI = `${filterServiceURI}/apply/?
-        FilterName=${filterName}&
-        FilterParams=${filterParams}&
-        FilterImageContent=${filterImageContent}`;
-
-        try {
-            api = await axios.get(baseURI);
-
-            // json -> class
-            filteredImageContent = JSON.parse(api.data);
-
-            // return
-            result = filteredImageContent;
-
-        } catch (e) {
-            console.log(e)
-        }
-
-    return result;
+export function emptyFilterParams() {
+    return [];
 }
 
-async function applyWP(filterName,filterImageContent) {
-    var result = {};
+export function FilterModel(filterName,filterParams,imageContent) {
+    this.filterName         = filterName;
+    this.filterParams       = new FilterParamsModel(filterParams);
+    this.filterimageContent = new ImageContentModel(imageContent);
+}
 
-    // class -> json
-    filterParams       = JSON.stringify(new FilterParamsModel());
-    filterImageContent = JSON.stringify(filterImageContent);
+// new FilterModel(filterName,filterParams,imageContent)
+export function apply(filterModel,successFunction,errorFunction) {
 
-    const baseURI = `${filterServiceURI}/apply/?
-        FilterName=${filterName}&
-        FilterParams=${filterParams}&
-        FilterImageContent=${filterImageContent}`;
+    /*
+        Public Class FilterModel
+            Public FilterName As String
+            Public FilterParams As FilterParamsModel
+            Public ImageContent As ImageContentModel
+        End Class
+    */
 
-        try {
-            api = await axios.get(baseURI);
+    axios.post(filterServiceURI + '/apply',filterModel)
+        .then(function (result){
+            if (typeof successFunction === 'function') {
+                let imageContent = result.data.content;
+                successFunction(imageContent);
+            }
+        })
+        .catch(function (error) {
+            if (typeof errorFunction === 'function')
+                errorFunction(error);
+        });
 
-            // json -> class
-            filteredImageContent = JSON.parse(api.data);
-
-            // return
-            result = filteredImageContent;
-
-        } catch (e) {
-            console.log(e)
-        }
-
-    return result;
 }
