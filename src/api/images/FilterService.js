@@ -65,10 +65,6 @@ function EmptyFilterParamsModel() {
     ];
 }
 
-function ImageContentModel(content) {
-    this.content = String(content);
-}
-
 function FilterParamModel(name,value) {
     this.name  = String(name);
     this.value = String(value);
@@ -125,18 +121,28 @@ function FilterParamsModel(filterParams) {
     }
 }
 
-export function emptyFilterParams() {
-    return [];
+export function ImageDataModel(width,height,imageData) {
+    this.width  = width;
+    this.height = height;
+    this.data   = Array.from(imageData);
 }
 
-export function FilterModel(filterName,filterParams,imageContent) {
-    this.filterName         = filterName;
-    this.filterParams       = new FilterParamsModel(filterParams);
-    this.filterimageContent = new ImageContentModel(imageContent);
+function FilterModel(filterName,filterParams,imageDataModel) {
+    this.filterName      = filterName;
+    this.filterParams    = new FilterParamsModel(filterParams);
+    this.filterImageData = imageDataModel;
 }
 
 // new FilterModel(filterName,filterParams,imageContent)
-export function apply(filterModel,successFunction,errorFunction) {
+export function apply0P(filterName,imageDataModel,
+    successFunction,errorFunction) {
+
+    applyCP(filterName,[],imageDataModel,
+        successFunction,errorFunction);
+}
+
+export function applyCP(filterName,filterParams,imageDataModel,
+    successFunction,errorFunction) {
 
     /*
         Public Class FilterModel
@@ -145,12 +151,14 @@ export function apply(filterModel,successFunction,errorFunction) {
             Public ImageContent As ImageContentModel
         End Class
     */
+    let filterModel = 
+        new FilterModel(filterName,filterParams,imageDataModel);
 
     axios.post(filterServiceURI + '/apply',filterModel)
         .then(function (result){
             if (typeof successFunction === 'function') {
-                let imageContent = result.data.content;
-                successFunction(imageContent);
+                let imageData = result.data;
+                successFunction(imageData);
             }
         })
         .catch(function (error) {

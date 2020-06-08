@@ -39,55 +39,87 @@
 <script>
 // import UploadImage from 'vue-upload-image';
 import {
-  emptyFilterParams,
-  FilterModel,
-  apply
+  ImageDataModel,
+  apply0P,
+  applyCP
   } from '@/api/images/FilterService.js';
 
 export default {
   name: 'Histeq',
   data: function () {
     return {
-      filterName: 'histeq',
-      dataImageSource: null,
-      dataImageDestination: null
+      imageDataSource: null,
+      imageDataDestination: null
     }
   },
   methods: {
     simulate_onClickInputImageSource (event) {
       document.getElementById('inputImageSource').click();
     },
+    ctxImage(tagImage) {
+      let canvas    = document.createElement("canvas");
+      canvas.width  = tagImage.naturalWidth;
+      canvas.height = tagImage.naturalHeight;
+
+      let ctx = canvas.getContext("2d");
+
+      return ctx
+    },
+    imageData(tagImage) {
+      let ctx = this.ctxImage(tagImage);
+      ctx.drawImage(tagImage,0,0,tagImage.naturalWidth,tagImage.naturalHeight);
+      let imageData = ctx.getImageData(0,0,tagImage.width,tagImage.height);
+
+      return imageData.data;
+    },
     onImageSourceFileChanged (e) {
       let that = this;
 
       const file = e.target.files[0];
+
       let img    = document.getElementById('imageSource')
       let reader = new FileReader();
 
-      reader.onload = function (e) {
-        img.src = e.target.result;
-        that.dataImageSource = e.target.result;
+      /*
+      reader.onloadstart = printEventType;
+      reader.onprogress  = printEventType;
+      reader.onload      = printEventType;
+      reader.onloadend   = printEventType;
+      */
 
-        // console.log(that.dataImageSource);
+      reader.onload = function (e) {
+        let image = e.target.result;
+        img.src   = image;
       }
 
+      img.onload = function(e) {
+        let tagImage  = e.target;
+        let imageData = that.imageData(tagImage);
+
+        // return
+        that.imageDataSource = 
+          new ImageDataModel(
+            tagImage.naturalWidth,
+            tagImage.naturalHeight,
+            imageData);
+      }
+
+      // reader.readAsDataURL(file);
       reader.readAsDataURL(file);
     },
     onUpload() {
       let that = this;
 
       // reset image destination
-      that.dataImageDestination = null;
+      that.imageDataDestination = null;
 
       // filter
-      if (this.dataImageSource !== null) {
-
-        apply(
-          new FilterModel(that.filterName,emptyFilterParams(),that.dataImageSource), 
+      if (that.imageDataSource !== null) {
+        apply0P('histeq',that.imageDataSource, 
           function (result) {
+          
+          console.log(result);
 
-          let img = document.getElementById('imageDestination')
-          img.src = result;
         });
 
       }
