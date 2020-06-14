@@ -35,7 +35,7 @@ export function getImageData(tagImage) {
 
     if (tagImage) {
         try {
-            let ctx = this.ctxImage(tagImage);
+            let ctx = ctxImage(tagImage);
             ctx.drawImage(tagImage,0,0,tagImage.naturalWidth,tagImage.naturalHeight);
             let imageData = ctx.getImageData(0,0,tagImage.width,tagImage.height);
         
@@ -43,6 +43,8 @@ export function getImageData(tagImage) {
             ret = imageData.data;
         }
         catch (e) {
+            console.log('Tagimages.getImageData');
+            console.log(e);
         }
     }
 

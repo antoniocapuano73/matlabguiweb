@@ -7,7 +7,7 @@
           <input type="file" name="inputImageSource" id="inputImageSource"
             accept="image/*"
             style="display: none"
-            @change="onImageSourceFileChanged">
+            @change="onImageSourceFilenameChanged">
         </div>
       </CCol>
       <CCol Cols="6">
@@ -38,10 +38,8 @@
 
 <script>
 // import UploadImage from 'vue-upload-image';
-import {
-  ImageDataModel,
-  apply0P
-  } from '@/api/images/FilterController.js';
+import {ImageDataModel} from '@/api/models/ApiGlobalModels.js';
+import {apply0P} from '@/api/images/ImageFilterController.js';
 
 import {
   ctxImage,
@@ -61,7 +59,7 @@ export default {
     simulate_onClickInputImageSource: function(event) {
       document.getElementById('inputImageSource').click();
     },
-    onImageSourceFileChanged (e) {
+    onImageSourceFilenameChanged (e) {
       let that = this;
 
       const file = e.target.files[0];

@@ -62,12 +62,6 @@ function FilterParamsModel(filterParams) {
     }
 }
 
-export function ImageDataModel(width,height,imageData) {
-    this.width  = width;
-    this.height = height;
-    this.data   = Array.from(imageData);
-}
-
 function FilterModel(filterName,filterParams,imageDataModel) {
     this.filterName      = filterName;
     this.filterParams    = new FilterParamsModel(filterParams);
