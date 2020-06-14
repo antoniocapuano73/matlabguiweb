@@ -2,32 +2,16 @@
   <CContainer>
     <CRow>
       <CCol Cols="6">
-        <div>
-          <CButton color="primary" @click ="simulate_onClickInputImageSource">Select image</CButton><br>
-          <input type="file" name="inputImageSource" id="inputImageSource"
-            accept="image/*"
-            style="display: none"
-            @change="onImageSourceFilenameChanged">
-        </div>
+        <OpenImageDialog 
+          textButton='Select image'
+          @click="onClickSourceImage()"
+          @load="onLoadSourceImage(arguments[0])">
+        </OpenImageDialog>
       </CCol>
       <CCol Cols="6">
         <div>
           <CButton color="primary" @click ="onUpload">Filter image</CButton><br>
         </div>
-      </CCol>
-    </CRow>
-    <CRow>
-      <p> </p>
-    </CRow>
-    <CRow>
-      <CCol Cols="6">
-        <div class="preview-image">
-          <img id="imageSource" alt="source image" 
-            @click ="simulate_onClickInputImageSource"
-          >
-        </div>
-      </CCol>
-      <CCol Cols="6">
         <div class="preview-image">
           <img id="imageDestination" alt="filtered image" >
         </div>
@@ -37,7 +21,11 @@
 </template>
 
 <script>
-// import UploadImage from 'vue-upload-image';
+
+// import components
+import OpenImageDialog from '@/components/OpenImageDialog.vue';
+
+// import code
 import {ImageDataModel} from '@/api/models/ApiGlobalModels.js';
 import {loadImage}      from '@/lib/images/TagImages.js';
 import {apply0P}        from '@/api/images/ImageFilterController.js';
@@ -50,6 +38,9 @@ import {
 
 export default {
   name: 'Histeq',
+  components: {
+    OpenImageDialog
+  },
   data: function () {
     return {
       imageDataModelSource: null,
@@ -57,22 +48,24 @@ export default {
     }
   },
   methods: {
-    simulate_onClickInputImageSource: function(event) {
-      document.getElementById('inputImageSource').click();
+    onClickSourceImage: function() {
+      // debug
+      //console.log('click');
+
+      // image destination
+      let tagImageDestination   = document.getElementById('imageDestination');
+
+      // clear image destination
+      tagImageDestination.src = '';
+
     },
-    onImageSourceFilenameChanged: function(e) {
-      let that = this;
-      let filename       = e.target.files[0];
-      let tagimageSource = document.getElementById('imageSource')
+    onLoadSourceImage: function(imageDataModel) {
+      // debug
+      //console.log('load');
+      //console.log(imageDataModel);
 
-      loadImage(filename, function(imageDataModel){
-        // display image
-        setImageData(tagimageSource,imageDataModel);
-
-        // return
-        that.imageDataModelSource = imageDataModel;
-      });
-
+      // return
+      this.imageDataModelSource = imageDataModel;
     },
     onUpload() {
       let that = this;
@@ -80,6 +73,9 @@ export default {
       // image destination
       let tagImageDestination   = document.getElementById('imageDestination');
       that.imageDataModelDestination = null;
+
+      // debug
+      console.log(that.imageDataModelSource);
 
       // filter
       if (that.imageDataModelSource !== null) {
