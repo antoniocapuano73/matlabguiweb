@@ -40,9 +40,14 @@
 // import UploadImage from 'vue-upload-image';
 import {
   ImageDataModel,
-  apply0P,
-  applyCP
-  } from '@/api/images/FilterService.js';
+  apply0P
+  } from '@/api/images/FilterController.js';
+
+import {
+  ctxImage,
+  getImageData,
+  setImageData
+} from '@/lib/images/TagImages.js'
 
 export default {
   name: 'Histeq',
@@ -53,39 +58,8 @@ export default {
     }
   },
   methods: {
-    simulate_onClickInputImageSource (event) {
+    simulate_onClickInputImageSource: function(event) {
       document.getElementById('inputImageSource').click();
-    },
-    ctxImage(tagImage) {
-      let canvas    = document.createElement("canvas");
-      canvas.width  = tagImage.naturalWidth;
-      canvas.height = tagImage.naturalHeight;
-
-      let ctx = canvas.getContext("2d");
-
-      return ctx
-    },
-    getImageData(tagImage) {
-      let ctx = this.ctxImage(tagImage);
-      ctx.drawImage(tagImage,0,0,tagImage.naturalWidth,tagImage.naturalHeight);
-      let imageData = ctx.getImageData(0,0,tagImage.width,tagImage.height);
-
-      return imageData.data;
-    },
-    setImageData(tagImage, width, height, imageData) {
-      let canvas = document.createElement("canvas");
-      canvas.width  = width;
-      canvas.height = height;
-
-      let ctx    = canvas.getContext("2d");
-      let ctxImageData = 
-        new ImageData(
-          Uint8ClampedArray.from(imageData),
-          width,height
-        )
-
-      ctx.putImageData(ctxImageData,0,0);
-      tagImage.src = canvas.toDataURL();
     },
     onImageSourceFileChanged (e) {
       let that = this;
@@ -109,7 +83,7 @@ export default {
 
       img.onload = function(e) {
         let tagImage  = e.target;
-        let imageData = that.getImageData(tagImage);
+        let imageData = getImageData(tagImage);
 
         // return
         that.imageDataSource = 
@@ -136,7 +110,7 @@ export default {
             let imageData = result;
           
             that.imageDataDestination = imageData;
-            that.setImageData(img, 
+            setImageData(img, 
               imageData.width, 
               imageData.height, 
               imageData.data);
