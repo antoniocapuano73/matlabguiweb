@@ -39,7 +39,8 @@
 <script>
 // import UploadImage from 'vue-upload-image';
 import {ImageDataModel} from '@/api/models/ApiGlobalModels.js';
-import {apply0P} from '@/api/images/ImageFilterController.js';
+import {loadImage}      from '@/lib/images/TagImages.js';
+import {apply0P}        from '@/api/images/ImageFilterController.js';
 
 import {
   ctxImage,
@@ -51,67 +52,44 @@ export default {
   name: 'Histeq',
   data: function () {
     return {
-      imageDataSource: null,
-      imageDataDestination: null
+      imageDataModelSource: null,
+      imageDataModelDestination: null
     }
   },
   methods: {
     simulate_onClickInputImageSource: function(event) {
       document.getElementById('inputImageSource').click();
     },
-    onImageSourceFilenameChanged (e) {
+    onImageSourceFilenameChanged: function(e) {
       let that = this;
+      let filename       = e.target.files[0];
+      let tagimageSource = document.getElementById('imageSource')
 
-      const file = e.target.files[0];
-
-      let img    = document.getElementById('imageSource')
-      let reader = new FileReader();
-
-      /*
-      reader.onloadstart = printEventType;
-      reader.onprogress  = printEventType;
-      reader.onload      = printEventType;
-      reader.onloadend   = printEventType;
-      */
-
-      reader.onload = function (e) {
-        let image = e.target.result;
-        img.src   = image;
-      }
-
-      img.onload = function(e) {
-        let tagImage  = e.target;
-        let imageData = getImageData(tagImage);
+      loadImage(filename, function(imageDataModel){
+        // display image
+        setImageData(tagimageSource,imageDataModel);
 
         // return
-        that.imageDataSource = 
-          new ImageDataModel(
-            tagImage.naturalWidth,
-            tagImage.naturalHeight,
-            imageData);
-      }
+        that.imageDataModelSource = imageDataModel;
+      });
 
-      // reader.readAsDataURL(file);
-      reader.readAsDataURL(file);
     },
     onUpload() {
       let that = this;
 
       // image destination
-      let img = document.getElementById('imageDestination');
-      that.imageDataDestination = null;
+      let tagImageDestination   = document.getElementById('imageDestination');
+      that.imageDataModelDestination = null;
 
       // filter
-      if (that.imageDataSource !== null) {
-        apply0P('histeq',that.imageDataSource, 
-          function (result) {
-            let imageData = result;
-          
-            that.imageDataDestination = imageData;
-            setImageData(img, 
-              imageData.width, 
-              imageData.height, 
-              imageData.data);
+      if (that.imageDataModelSource !== null) {
+        apply0P('histeq',that.imageDataModelSource, 
+          function (imageDataModel) {
+
+            //console.log(imageDataModel);
+
+            that.imageDataModelDestination = imageDataModel;
+            setImageData(tagImageDestination,imageDataModel);
 
         });
 

@@ -1,3 +1,4 @@
+import {ImageDataModel} from '../../api/models/ApiGlobalModels.js'
 /*
     il tagImage deve contenere l'immagine.
     E' bene eseguire questa funzione nell'eventi
@@ -27,8 +28,10 @@ export function ctxImage(tagImage) {
 
 /*
     il tagImage deve contenere l'immagine.
-    E' bene eseguire questa funzione nell'eventi
+    E' bene eseguire questa funzione nell'evento
     ' onload del tagImage
+
+    return ApiGlobalModels.ImageDataModel
 */
 export function getImageData(tagImage) {
     let ret = null;
@@ -40,7 +43,11 @@ export function getImageData(tagImage) {
             let imageData = ctx.getImageData(0,0,tagImage.width,tagImage.height);
         
             // return
-            ret = imageData.data;
+            ret = 
+                new ImageDataModel(
+                    tagImage.naturalWidth,
+                    tagImage.naturalHeight,
+                    imageData.data);
         }
         catch (e) {
             console.log('Tagimages.getImageData');
@@ -52,28 +59,75 @@ export function getImageData(tagImage) {
 }
 
 /*
-    Sovrascrive sul tagImage l'immagine imageData
+    Sovrascrive sul tagImage l'immagine imageDataModel
     fornita come un Array di byte
+
+    ApiGlobalModels.ImageDataModel
 */
-export function setImageData(tagImage, width, height, imageData) {
+export function setImageData(tagImage, imageDataModel) {
     try {
-        if ((tagImage) && (imageData) && (width > 0) && (height > 0)) {
+        if ((tagImage) && (imageDataModel)) {
             let canvas = document.createElement("canvas");
-            canvas.width  = width;
-            canvas.height = height;
+            canvas.width  = imageDataModel.width;
+            canvas.height = imageDataModel.height;
         
             let ctx    = canvas.getContext("2d");
             let ctxImageData = 
-            new ImageData(
-                Uint8ClampedArray.from(imageData),
-                width,height
-            )
-        
+                new ImageData(
+                    Uint8ClampedArray.from(imageDataModel.data),
+                    imageDataModel.width,
+                    imageDataModel.height
+                )
+            //console.log(ctxImageData);
+
             ctx.putImageData(ctxImageData,0,0);
             tagImage.src = canvas.toDataURL();
         }
     }
     catch (e) {
+        console.log('Tagimages.setImageData');
+        console.log(e);
     }
 
+}
+
+/*
+    return:
+        ApiGlobalModels.ImageDataModel
+        visualizza immagine su tagImage
+*/
+export function loadImage(filename,successFunction) {
+    let ret = false;
+
+    try {
+        let img    = document.createElement('img');
+        let reader = new FileReader();
+  
+        reader.onload = function (e) {
+          let urlImage = e.target.result;
+          img.src   = urlImage;
+        }
+  
+        img.onload = function(e) {
+          // data
+          let imageDataModel = getImageData(img);
+
+          // return
+          if (typeof successFunction === 'function')
+            successFunction(imageDataModel);
+  
+        }
+  
+        // reader.readAsDataURL(file);
+        reader.readAsDataURL(filename);
+
+        // return
+        ret = true;
+    }
+    catch (e) {
+        console.log('Tagimages.loadImage');
+        console.log(e);
+    }
+
+    return ret;
 }
