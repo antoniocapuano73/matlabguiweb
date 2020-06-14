@@ -65,12 +65,27 @@ export default {
 
       return ctx
     },
-    imageData(tagImage) {
+    getImageData(tagImage) {
       let ctx = this.ctxImage(tagImage);
       ctx.drawImage(tagImage,0,0,tagImage.naturalWidth,tagImage.naturalHeight);
       let imageData = ctx.getImageData(0,0,tagImage.width,tagImage.height);
 
       return imageData.data;
+    },
+    setImageData(tagImage, width, height, imageData) {
+      let canvas = document.createElement("canvas");
+      canvas.width  = width;
+      canvas.height = height;
+
+      let ctx    = canvas.getContext("2d");
+      let ctxImageData = 
+        new ImageData(
+          Uint8ClampedArray.from(imageData),
+          width,height
+        )
+
+      ctx.putImageData(ctxImageData,0,0);
+      tagImage.src = canvas.toDataURL();
     },
     onImageSourceFileChanged (e) {
       let that = this;
@@ -94,7 +109,7 @@ export default {
 
       img.onload = function(e) {
         let tagImage  = e.target;
-        let imageData = that.imageData(tagImage);
+        let imageData = that.getImageData(tagImage);
 
         // return
         that.imageDataSource = 
@@ -110,15 +125,21 @@ export default {
     onUpload() {
       let that = this;
 
-      // reset image destination
+      // image destination
+      let img = document.getElementById('imageDestination');
       that.imageDataDestination = null;
 
       // filter
       if (that.imageDataSource !== null) {
         apply0P('histeq',that.imageDataSource, 
           function (result) {
+            let imageData = result;
           
-          console.log(result);
+            that.imageDataDestination = imageData;
+            that.setImageData(img, 
+              imageData.width, 
+              imageData.height, 
+              imageData.data);
 
         });
 
