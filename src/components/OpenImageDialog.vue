@@ -12,16 +12,16 @@
         <div >
             <CButton color="primary" @click ="simulate_onClickInputImageSource">{{textButton}}</CButton><br>
             <input type="file" name="inputImageSource" id="inputImageSource"
-            accept="image/*"
-            style="display: none"
-            @change="onImageSourceFilenameChanged">
+              accept="image/*"
+              style="display: none"
+              @change="onImageSourceFilenameChanged">
         </div>
     </CRow>
     <CRow>
     </CRow>
     <CRow>
         <div class="preview-image">
-            <img id="imageSource" alt="source image" 
+            <img id="imageSource" alt="source image" src=""
             @click ="simulate_onClickInputImageSource"
             >
         </div>
@@ -40,7 +40,7 @@ import {
 } from '@/lib/images/TagImages.js'
 
 export default {
-  name: 'Histeq',
+  name: 'OpenImageDialog',
   data: function () {
     return {
       

@@ -4,7 +4,7 @@ import {ImageDataModel} from '../../api/models/ApiGlobalModels.js'
     E' bene eseguire questa funzione nell'eventi
     ' onload del tagImage
 */
-export function ctxImage(tagImage) {
+function ctxImage(tagImage) {
     let ret = null;
 
     if (tagImage) {

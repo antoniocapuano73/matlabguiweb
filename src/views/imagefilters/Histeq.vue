@@ -9,12 +9,11 @@
         </OpenImageDialog>
       </CCol>
       <CCol Cols="6">
-        <div>
-          <CButton color="primary" @click ="onUpload">Filter image</CButton><br>
-        </div>
-        <div class="preview-image">
-          <img id="imageDestination" alt="filtered image" >
-        </div>
+        <ShowImageDialog
+          textButton='Filter image'
+          :imageDataModel="imageDataModelDestination"
+          @click="onUpload">
+        </ShowImageDialog>
       </CCol>
     </CRow>
   </CContainer>
@@ -24,6 +23,7 @@
 
 // import components
 import OpenImageDialog from '@/components/OpenImageDialog.vue';
+import ShowImageDialog from '@/components/ShowImageDialog.vue';
 
 // import code
 import {ImageDataModel} from '@/api/models/ApiGlobalModels.js';
@@ -39,7 +39,8 @@ import {
 export default {
   name: 'Histeq',
   components: {
-    OpenImageDialog
+    OpenImageDialog, 
+    ShowImageDialog,
   },
   data: function () {
     return {
@@ -55,9 +56,6 @@ export default {
       // image destination
       let tagImageDestination   = document.getElementById('imageDestination');
 
-      // clear image destination
-      tagImageDestination.src = '';
-
     },
     onLoadSourceImage: function(imageDataModel) {
       // debug
@@ -71,11 +69,11 @@ export default {
       let that = this;
 
       // image destination
-      let tagImageDestination   = document.getElementById('imageDestination');
+      let tagImageDestination = document.getElementById('imageDestination');
       that.imageDataModelDestination = null;
 
       // debug
-      console.log(that.imageDataModelSource);
+      // console.log(that.imageDataModelSource);
 
       // filter
       if (that.imageDataModelSource !== null) {
