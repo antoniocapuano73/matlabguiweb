@@ -2,9 +2,8 @@
     props:
         textButton
 
-    events:
-        click
-        load(imageDataModel)
+        onClick
+        onLoad(imageDataModel)
 -->
 <template>
   <CContainer>
@@ -51,11 +50,33 @@ export default {
       type: String,
       default: 'Select image'
     },
+    onClick: {
+      type: Function,
+      default: null
+    },
+    onLoad: {
+      type: Function,
+      default: null
+    }
   },
   methods: {
     simulate_onClickInputImageSource: function(event) {
+        let that = this;
+
         // raise event
         this.$emit('click');
+
+        // onClick
+        if (that.onClick) {
+          if (typeof that.onClick === 'function') {
+            try {
+              that.onClick();
+
+            } catch (e) {
+              console.log('OpenImageDialog onClick error!');
+            }
+          }
+        }
 
         // simulate
         document.getElementById('inputImageSource').click();
@@ -72,6 +93,18 @@ export default {
 
         // raise event
         that.$emit('load',imageDataModel);
+
+        // onLoad
+        if (that.onLoad) {
+          if (typeof that.onLoad === 'function') {
+            try {
+              that.onLoad(imageDataModel);
+
+            } catch (e) {
+              console.log('OpenImageDialog onLoad error!');
+            }
+          }
+        }
       });
 
     }

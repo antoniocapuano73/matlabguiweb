@@ -4,15 +4,16 @@
       <CCol Cols="6">
         <OpenImageDialog 
           textButton='Select image'
-          @click="onClickSourceImage()"
-          @load="onLoadSourceImage(arguments[0])">
+          :onClick="onClickSourceImage"
+          :onLoad ="onLoadSourceImage">
         </OpenImageDialog>
       </CCol>
       <CCol Cols="6">
         <ShowImageDialog
           textButton='Filter image'
           :imageDataModel="imageDataModelDestination"
-          @click="onUpload">
+          :onClick="onUpload"
+          :onLoad ="onLoadDestinationImage">
         </ShowImageDialog>
       </CCol>
     </CRow>
@@ -50,22 +51,13 @@ export default {
   },
   methods: {
     onClickSourceImage: function() {
-      // debug
-      //console.log('click');
-
-      // image destination
-      let tagImageDestination   = document.getElementById('imageDestination');
 
     },
     onLoadSourceImage: function(imageDataModel) {
-      // debug
-      //console.log('load');
-      //console.log(imageDataModel);
-
       // return
       this.imageDataModelSource = imageDataModel;
     },
-    onUpload() {
+    onUpload: function() {
       let that = this;
 
       // image destination
@@ -88,6 +80,9 @@ export default {
         });
 
       }
+    },
+    onLoadDestinationImage: function(imageDataModel) {
+    
     }
   }
 }
