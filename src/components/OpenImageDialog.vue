@@ -88,23 +88,26 @@ export default {
       let tagimageSource = document.getElementById('imageSource')
 
       loadImage(filename, function(imageDataModel){
-        // display image
-        setImageData(tagimageSource,imageDataModel);
+        tagimageSource.onload = function(e) {
+          // raise event
+          that.$emit('load',imageDataModel);
 
-        // raise event
-        that.$emit('load',imageDataModel);
+          // onLoad
+          if (that.onLoad) {
+            if (typeof that.onLoad === 'function') {
+              try {
+                that.onLoad(imageDataModel);
 
-        // onLoad
-        if (that.onLoad) {
-          if (typeof that.onLoad === 'function') {
-            try {
-              that.onLoad(imageDataModel);
-
-            } catch (e) {
-              console.log('OpenImageDialog onLoad error!');
+              } catch (e) {
+                console.log('OpenImageDialog onLoad error!');
+              }
             }
           }
         }
+
+        // display image
+        setImageData(tagimageSource,imageDataModel);
+
       });
 
     }
