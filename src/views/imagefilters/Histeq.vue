@@ -2,7 +2,7 @@
   <CContainer>
     <CRow>
       <CCol Cols="6">
-        <OpenImageDialog 
+        <OpenImageDialog
           textButton='Select image'
           :onClick="onClickSourceImage"
           :onLoad ="onLoadSourceImage">
@@ -56,6 +56,9 @@ export default {
     onLoadSourceImage: function(imageDataModel) {
       // return
       this.imageDataModelSource = imageDataModel;
+
+      // clear destination image
+      this.imageDataModelDestination = null;
     },
     onUpload: function() {
       let that = this;

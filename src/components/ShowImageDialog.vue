@@ -16,7 +16,7 @@
     </CRow>
     <CRow>
         <div class="preview-image">
-            <img id="image" alt="showing image" @load ="showedImage">
+            <img id="image" alt="showing image" width="100%" @load ="showedImage">
         </div>
     </CRow>
   </CContainer>
@@ -91,7 +91,14 @@ export default {
   },
   watch: { 
     imageDataModel: function (imageDataModel) {
-      setImageData(document.getElementById('image'),imageDataModel);
+      let tagImage = document.getElementById('image');
+
+      if (imageDataModel) {
+        setImageData(tagImage,imageDataModel);
+      }
+      else {
+        tagImage.src="";
+      }
     }
   }
 }

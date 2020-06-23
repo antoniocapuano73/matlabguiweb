@@ -20,7 +20,7 @@
     </CRow>
     <CRow>
         <div class="preview-image">
-            <img id="imageSource" alt="source image" src=""
+            <img id="imageSource" alt="source image" width="100%"
             @click ="simulate_onClickInputImageSource"
             >
         </div>
