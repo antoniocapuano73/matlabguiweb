@@ -8,29 +8,32 @@
 <template>
   <CContainer>
     <CRow>
-        <div >
-            <CButton color="primary" @click ="simulate_onClickInputImageSource">{{textButton}}</CButton><br>
-            <input type="file" name="inputImageSource" id="inputImageSource"
-              accept="image/*"
-              style="display: none"
-              @change="onImageSourceFilenameChanged">
-        </div>
+      <div>
+          <CButton class="button" color="primary" @click ="simulate_onClickInputImageSource">{{textButton}}</CButton><br>
+          <input type="file" name="inputImageSource" id="inputImageSource"
+            accept="image/*"
+            style="display: none"
+            @change="onImageSourceFilenameChanged">
+      </div>
     </CRow>
     <CRow>
     </CRow>
     <CRow>
-        <div class="preview-image">
-            <img id="imageSource" alt="source image" width="100%"
-            @click ="simulate_onClickInputImageSource"
-            >
+      <div class="text-center" v-if="visibleSpinner">
+        <div class="spinner-border" style="width: 4rem; height: 4rem;" role="status">
+          <span class="sr-only">Loading...</span>
         </div>
+      </div>
+      <div class="preview-image">
+          <img id="imageSource" alt="source image" width="100%" @click ="simulate_onClickInputImageSource">
+      </div>
     </CRow>
   </CContainer>
 </template>
 
 <script>
 // import UploadImage from 'vue-upload-image';
-import {loadImage}      from '@/lib/images/TagImages.js';
+import {loadImage} from '@/lib/images/TagImages.js';
 
 import {
   ctxImage,
@@ -42,7 +45,7 @@ export default {
   name: 'OpenImageDialog',
   data: function () {
     return {
-      
+      visibleSpinner: false,
     }
   },
   props: {
@@ -85,30 +88,40 @@ export default {
     onImageSourceFilenameChanged: function(e) {
       let that = this;
       let filename       = e.target.files[0];
-      let tagimageSource = document.getElementById('imageSource')
+      let tagImageSource = document.getElementById('imageSource')
 
-      loadImage(filename, function(imageDataModel){
-        tagimageSource.onload = function(e) {
-          // raise event
-          that.$emit('load',imageDataModel);
+      // show spinner
+      that.visibleSpinner = true;
+      tagImageSource.src = "";
 
-          // onLoad
-          if (that.onLoad) {
-            if (typeof that.onLoad === 'function') {
-              try {
-                that.onLoad(imageDataModel);
+      let successFunction = function(imageDataModel) {
 
-              } catch (e) {
-                console.log('OpenImageDialog onLoad error!');
-              }
-            }
-          }
-        }
+                  tagImageSource.onload = function(e) {
+                    // raise event
+                    that.$emit('load',imageDataModel);
+
+                    // onLoad
+                    if (that.onLoad) {
+                      if (typeof that.onLoad === 'function') {
+                        that.onLoad(imageDataModel);
+                      }
+                    }
+
+                  }
+
+        // hide spinner
+        that.visibleSpinner = false;
 
         // display image
-        setImageData(tagimageSource,imageDataModel);
+        setImageData(tagImageSource,imageDataModel);
+      }
 
-      });
+      let errorFunction = function(e) {
+        // hide spinner
+        that.visibleSpinner = false;
+      }
+
+      loadImage(filename,successFunction,errorFunction);
 
     }
   }
@@ -117,10 +130,21 @@ export default {
 </script>
 
 <style scoped>
+  .button {
+    margin-bottom: 5px;
+  }
   .preview-image {
     border-style: solid; 
     border-width: 1px;
     width: 100%;
-    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .text-center {
+    border-style: solid; 
+    border-width: 1px;
+    width: 100%;
+    padding-top: 50%;
+    padding-bottom: 50%;
+    margin-bottom: 5px;
   }
 </style>

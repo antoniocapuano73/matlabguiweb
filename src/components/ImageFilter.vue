@@ -1,6 +1,9 @@
 <template>
   <CContainer>
     <CRow>
+      <h1 class="title">{{ name }}</h1>
+    </CRow>
+    <CRow>
       <CCol Cols="6">
         <OpenImageDialog
           :textButton="textButtonSelectImage"
@@ -15,6 +18,12 @@
           :onClick="onUpload"
           :onLoad ="onLoadDestinationImage">
         </ShowImageDialog>
+      </CCol>
+    </CRow>
+    <CRow>
+      <CCol Cols="6">
+      </CCol>
+      <CCol Cols="6">
       </CCol>
     </CRow>
   </CContainer>
@@ -38,7 +47,7 @@ import {
 } from '@/lib/images/TagImages.js'
 
 export default {
-  name: 'ImageFilterHisteq',
+  name: 'ImageFilter',
   components: {
     OpenImageDialog, 
     ShowImageDialog,
@@ -50,6 +59,10 @@ export default {
     }
   },
   props: {
+    name: {
+      type: String,
+      default: 'Filter'
+    },
     textButtonSelectImage: {
       type: String,
       default: 'Select image'
@@ -107,5 +120,8 @@ export default {
     border-style: solid; 
     border-width: 1px;
     width: 100%;
+  }
+  .title {
+    margin-bottom: 25px;
   }
 </style>

@@ -96,7 +96,7 @@ export function setImageData(tagImage, imageDataModel) {
         ApiGlobalModels.ImageDataModel
         visualizza immagine su tagImage
 */
-export function loadImage(filename,successFunction) {
+export function loadImage(filename,successFunction,errorFunction) {
     let ret = false;
 
     try {
@@ -105,9 +105,9 @@ export function loadImage(filename,successFunction) {
   
         reader.onload = function (e) {
           let urlImage = e.target.result;
-          img.src   = urlImage;
+          img.src      = urlImage;
         }
-  
+
         img.onload = function(e) {
           // data
           let imageDataModel = getImageData(img);
@@ -117,7 +117,13 @@ export function loadImage(filename,successFunction) {
             successFunction(imageDataModel);
   
         }
-  
+
+        // ERR
+        if (typeof errorFunction === 'function') {
+            reader.onerror = errorFunction;
+            img.onerror    = errorFunction;
+        } 
+
         // reader.readAsDataURL(file);
         reader.readAsDataURL(filename);
 
@@ -127,6 +133,10 @@ export function loadImage(filename,successFunction) {
     catch (e) {
         console.log('Tagimages.loadImage');
         console.log(e);
+
+        // ERR
+        if (typeof errorFunction === 'function')
+            errorFunction(e);
     }
 
     return ret;

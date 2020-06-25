@@ -1,19 +1,22 @@
 <template>
   <CContainer>
-    <ImageFilterHisteq textButtonSelectImage="Select Image" textButtonFilterImage="Filter Image">
-    </ImageFilterHisteq>
+    <ImageFilter
+      name="Histeq"
+      textButtonSelectImage="Select Image" 
+      textButtonFilterImage="Filter Image">
+    </ImageFilter>
   </CContainer>
 </template>
 
 <script>
 
 // import components
-import ImageFilterHisteq from '@/components/ImageFilterHisteq.vue';
+import ImageFilter from '@/components/ImageFilter.vue';
 
 export default {
   name: 'Histeq',
   components: {
-    ImageFilterHisteq
+    ImageFilter
   },
   data: function () {
     return {
