@@ -19,11 +19,6 @@
     <CRow>
     </CRow>
     <CRow>
-      <div class="text-center" v-if="visibleSpinner">
-        <div class="spinner-border" style="width: 4rem; height: 4rem;" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
       <div class="preview-image">
           <img id="imageSource" alt="source image" width="100%" @click ="simulate_onClickInputImageSource">
       </div>
@@ -45,7 +40,7 @@ export default {
   name: 'OpenImageDialog',
   data: function () {
     return {
-      visibleSpinner: false,
+
     }
   },
   props: {
@@ -90,9 +85,8 @@ export default {
       let filename       = e.target.files[0];
       let tagImageSource = document.getElementById('imageSource')
 
-      // show spinner
-      that.visibleSpinner = true;
-      tagImageSource.src = "";
+      // clear source image
+      tagImageSource.src = require("../assets/images/spinnerImage.gif");
 
       let successFunction = function(imageDataModel) {
 
@@ -109,16 +103,13 @@ export default {
 
                   }
 
-        // hide spinner
-        that.visibleSpinner = false;
-
         // display image
         setImageData(tagImageSource,imageDataModel);
       }
 
       let errorFunction = function(e) {
         // hide spinner
-        that.visibleSpinner = false;
+        tagImageSource.src = "";
       }
 
       loadImage(filename,successFunction,errorFunction);
@@ -127,7 +118,7 @@ export default {
   }
 }
 
-</script>
+</script> 
 
 <style scoped>
   .button {
@@ -137,14 +128,6 @@ export default {
     border-style: solid; 
     border-width: 1px;
     width: 100%;
-    margin-bottom: 5px;
-  }
-  .text-center {
-    border-style: solid; 
-    border-width: 1px;
-    width: 100%;
-    padding-top: 50%;
-    padding-bottom: 50%;
     margin-bottom: 5px;
   }
 </style>
