@@ -9,7 +9,11 @@
   <CContainer>
     <CRow>
       <div>
-          <CButton class="button" color="primary" @click ="simulate_onClickInputImageSource">{{textButton}}</CButton><br>
+          <CButton class="button" color="primary" @click ="simulate_onClickInputImageSource">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="visibleSpinner"></span>
+            {{textButton}}
+          </CButton>          
+          
           <input type="file" name="inputImageSource" id="inputImageSource"
             accept="image/*"
             style="display: none"
@@ -17,10 +21,8 @@
       </div>
     </CRow>
     <CRow>
-    </CRow>
-    <CRow>
       <div class="preview-image">
-          <img id="imageSource" alt="source image" width="100%" @click ="simulate_onClickInputImageSource">
+          <img id="imageOpenImageDialog" alt="source image" width="100%" @click ="simulate_onClickInputImageSource">
       </div>
     </CRow>
   </CContainer>
@@ -40,7 +42,7 @@ export default {
   name: 'OpenImageDialog',
   data: function () {
     return {
-
+      visibleSpinner: false,
     }
   },
   props: {
@@ -59,6 +61,8 @@ export default {
   },
   methods: {
     simulate_onClickInputImageSource: function(event) {
+        //console.log("OpenImageDialog.simulate_onClickInputImageSource");
+
         let that = this;
 
         // raise event
@@ -67,12 +71,14 @@ export default {
         // onClick
         if (that.onClick) {
           if (typeof that.onClick === 'function') {
+
             try {
               that.onClick();
 
             } catch (e) {
               console.log('OpenImageDialog onClick error!');
             }
+            
           }
         }
 
@@ -82,34 +88,45 @@ export default {
     },
     onImageSourceFilenameChanged: function(e) {
       let that = this;
-      let filename       = e.target.files[0];
-      let tagImageSource = document.getElementById('imageSource')
+      let filename = e.target.files[0];
+      let tagImage = document.getElementById('imageOpenImageDialog')
 
       // clear source image
-      tagImageSource.src = require("../assets/images/spinnerImage.gif");
+      tagImage.src  = "";
+      that.visibleSpinner = true;
 
       let successFunction = function(imageDataModel) {
 
-                  tagImageSource.onload = function(e) {
+                  tagImage.onload = function(e) {
+                    // hide spinner
+                    that.visibleSpinner = false;
+
                     // raise event
                     that.$emit('load',imageDataModel);
 
                     // onLoad
                     if (that.onLoad) {
                       if (typeof that.onLoad === 'function') {
-                        that.onLoad(imageDataModel);
+
+                        try {
+                          that.onLoad(imageDataModel);;
+
+                        } catch (e) {
+                          console.log('OpenImageDialog onLoad error!');
+                        }
+
                       }
                     }
 
                   }
 
         // display image
-        setImageData(tagImageSource,imageDataModel);
+        setImageData(tagImage,imageDataModel);
       }
 
       let errorFunction = function(e) {
         // hide spinner
-        tagImageSource.src = "";
+        that.visibleSpinner = false;
       }
 
       loadImage(filename,successFunction,errorFunction);

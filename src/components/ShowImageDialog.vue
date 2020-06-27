@@ -9,14 +9,15 @@
   <CContainer>
     <CRow>
         <div >
-            <CButton color="primary" @click ="getImage">{{textButton}}</CButton><br>
+            <CButton class="button" color="primary" @click ="getImage">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="visibleSpinner"></span>
+              {{textButton}}
+            </CButton>
         </div>
     </CRow>
     <CRow>
-    </CRow>
-    <CRow>
         <div class="preview-image">
-            <img id="image" alt="showing image" width="100%" @load ="showedImage">
+            <img id="imageShowImageDialog" alt="showing image" width="100%">
         </div>
     </CRow>
   </CContainer>
@@ -30,7 +31,7 @@ export default {
   name: 'ShowImageDialog',
   data: function () {
     return {
-      
+      visibleSpinner: false,
     }
   },
   props: {
@@ -54,6 +55,16 @@ export default {
   methods: {
     getImage: function() {
         let that = this;
+        let tagImage = document.getElementById('imageShowImageDialog');
+
+        // clear source image
+        tagImage.src  = "";
+
+        // show spinner
+        that.visibleSpinner = true;
+
+        // debug
+        // console.log("that.visibleSpinner",that.visibleSpinner);
 
         // raise event
         this.$emit('click');
@@ -61,17 +72,25 @@ export default {
         // onClick
         if (that.onClick) {
           if (typeof that.onClick === 'function') {
+
             try {
               that.onClick();
 
             } catch (e) {
               console.log('ShowImageDialog onClick error!');
             }
+
           }
         }
     },
     showedImage: function() {
       let that = this;
+
+      // hide spinner
+      that.visibleSpinner = false;
+
+      // debug
+      // console.log("that.visibleSpinner",that.visibleSpinner);
 
       // raise event
       that.$emit('load',that.imageDataModel);
@@ -91,14 +110,21 @@ export default {
   },
   watch: { 
     imageDataModel: function (imageDataModel) {
-      let tagImage = document.getElementById('image');
+      let that = this;
+      let tagImage = document.getElementById('imageShowImageDialog');
 
       if (imageDataModel) {
+        tagImage.onload = that.showedImage();
+
         setImageData(tagImage,imageDataModel);
       }
       else {
+        // hide spinner
+        //that.visibleSpinner = false;
         tagImage.src="";
       }
+
+
     }
   }
 }
@@ -106,10 +132,13 @@ export default {
 </script>
 
 <style scoped>
+  .button {
+    margin-bottom: 5px;
+  }
   .preview-image {
     border-style: solid; 
     border-width: 1px;
     width: 100%;
-    margin-top: 5px;
+    margin-bottom: 5px;
   }
 </style>
