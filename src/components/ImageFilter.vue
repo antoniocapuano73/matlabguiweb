@@ -38,7 +38,10 @@ import ShowImageDialog from '@/components/ShowImageDialog.vue';
 // import code
 import {ImageDataModel} from '@/api/models/ApiGlobalModels.js';
 import {loadImage}      from '@/lib/images/TagImages.js';
-import {apply0P}        from '@/api/images/ImageFilterController.js';
+import {
+    apply0P,
+    getFilterByName
+} from '@/api/images/ImageFilterController.js';
 
 import {
   ctxImage,
@@ -55,7 +58,8 @@ export default {
   data: function () {
     return {
       imageDataModelSource: null,
-      imageDataModelDestination: null
+      imageDataModelDestination: null,
+      filterDesignModel: null,
     }
   },
   props: {
@@ -71,6 +75,26 @@ export default {
       type: String,
       default: 'Filter image'
     }
+  },
+  mounted: function() {
+    let that = this;
+
+    // filter
+    //console.log("call getFilterByName");
+    getFilterByName(that.name,function (filterDesignModel) {
+      if (filterDesignModel) {
+        // filter
+        that.filterDesignModel = filterDesignModel;
+      } else {
+        // ERR
+        that.filterDesignModel = null;
+      }
+
+      // debug
+      //console.log("filter");
+      //console.log(that.filter);
+    });
+
   },
   methods: {
     onClickSourceImage: function() {
