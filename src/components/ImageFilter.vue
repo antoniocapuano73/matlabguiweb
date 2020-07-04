@@ -21,19 +21,17 @@
       </CCol>
     </CRow>
     <CRow>
-      <CCol Cols="6">
-        <h2 class="filterParams">Filter Params</h2>
-        <!--
-        <div v-for="(filterParamModel,index) in filterParamsModel.items" 
-             :key="index" 
-             v-show="index <= (filterParamsModel.count-1)">
-
-          {{ filterParamModel.name}}
-        </div>
-        -->
-      </CCol>
-      <CCol Cols="6">
-      </CCol>
+      <ImageFilterParams class="section" v-if="isFilterParamsModel()"
+        text="Filter Params"
+        :filterParamsModel="filterParamsModel"
+        :onChange="onChangeFilterParams">
+      </ImageFilterParams>
+    </CRow>
+    <CRow>
+      <ImageFilterDesign class="section" v-if="isFilterDesignModel()"
+        text="Script Text"
+        :filterDesignModel="filterDesignModel">
+      </ImageFilterDesign>
     </CRow>
   </CContainer>
 </template>
@@ -43,12 +41,15 @@
 // import components
 import OpenImageDialog from '@/components/OpenImageDialog.vue';
 import ShowImageDialog from '@/components/ShowImageDialog.vue';
+import ImageFilterParams from '@/components/ImageFilterParams.vue';
+import ImageFilterDesign from '@/components/ImageFilterDesign.vue';
 
 // import code
 import {ImageDataModel} from '@/api/models/ApiGlobalModels.js';
 import {loadImage}      from '@/lib/images/TagImages.js';
 import {
     FilterParamsModel,
+    FilterDesignModel,
     apply0P,
     getFilterByName
 } from '@/api/images/ImageFilterController.js';
@@ -64,13 +65,15 @@ export default {
   components: {
     OpenImageDialog, 
     ShowImageDialog,
+    ImageFilterParams,
+    ImageFilterDesign
   },
   data: function () {
     return {
       imageDataModelSource      : null,
       imageDataModelDestination : null,
-      filterDesignModel         : null,
-      filterParamsModel         : null,
+      filterDesignModel         : new FilterDesignModel(),
+      filterParamsModel         : new FilterParamsModel(),
     }
   },
   props: {
@@ -99,6 +102,34 @@ export default {
   methods: {
     imageFilterName: function() {
       return "ImageFilter" + this.name;
+    },
+    isFilterParamsModel: function() {
+      let that = this;
+
+      try {
+        return (
+          (that.filterParamsModel) && 
+          (that.filterParamsModel.count > 0));
+      }
+      catch (e) {
+        return false;
+      }
+    },
+    isFilterDesignModel: function() {
+      let that = this;
+
+      try {
+        return (
+          (that.filterDesignModel) && 
+          (that.filterDesignModel.ID > 0));
+        }
+      catch (e) {
+        return false;
+      }
+    },
+    onChangeFilterParams: function(filterParamsModel,index) {
+
+
     },
     onClickSourceImage: function() {
 
@@ -138,33 +169,25 @@ export default {
       let that = this;
       let tagName = that.imageFilterName();
 
-      let status = !enabled;
+      let disabled = !enabled;
 
       try {
 
-        let setNode = function (node,status) {
+        let setNode = function (node,disabled) {
           if (node) {
-            node.disabled  = status;
-
-            let childNodes = node.getElementsByTagName('*');
-
-            if (childNodes)
-              setChildNodes(childNodes);
+            node.disabled = disabled;
+            setChildNodes(node.getElementsByTagName('*'),disabled);
           }
         }
 
-        let setChildNodes = function (childNodes) {
+        let setChildNodes = function (childNodes,disabled) {
           if (childNodes)
             for (var node of childNodes) {
-              setNode(node,status);
+              setNode(node,disabled);
             }
         };
 
-        let tagContainer = document.getElementById(tagName);
-        let childNodes   = tagContainer.getElementsByTagName('*');
-
-        tagContainer.disabled = status;
-        setChildNodes(childNodes);
+        setNode(document.getElementById(tagName),disabled);
 
       }
       catch (e) {
@@ -233,7 +256,7 @@ export default {
   .title {
     margin-bottom: 25px;
   }
-  .filterParams {
+  .section {
     margin-top: 25px;
   }
 </style>

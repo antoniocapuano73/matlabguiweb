@@ -46,10 +46,45 @@ export function FilterParamsModel(filterParams) {
     }
 }
 
-function FilterModel(filterName,filterParams,imageDataModel) {
+export function FilterModel(filterName,filterParamsModel,imageDataModel) {
     this.filterName      = filterName;
-    this.filterParams    = new FilterParamsModel(filterParams);
+    this.filterParams    = filterParamsModel;
     this.filterImageData = imageDataModel;
+}
+
+/*
+    Public Class FilterParamNamesModel
+        Public count As Integer
+        Public items(FILTER_PARAMS_COUNT) As String
+    End Class
+
+    Public Class FilterDesignModel
+        Public ID As Integer
+        Public Name As String
+        Public Note As String
+        Public ScriptText As String
+        Public Custom As Boolean
+
+        Public ParamNames As FilterParamNamesModel
+    End Class
+*/
+export function FilterParamNamesModel() {
+    // default return
+    this.count = 0;
+    this.items = [];
+    for (let i=0; i < process.env.VUE_APP_FILTER_PARAMS_COUNT; i++) {
+        this.items.push('');
+    }
+}
+
+export function FilterDesignModel() {
+    this.ID = -1;
+    this.Name = '';
+    this.Note = '';
+    this.ScriptText = '';
+    this.Custom = false;
+
+    this.ParamNames = new FilterParamNamesModel();
 }
 
 // new FilterModel(filterName,filterParams,imageContent)
