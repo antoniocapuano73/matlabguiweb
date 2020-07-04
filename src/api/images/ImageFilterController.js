@@ -1,17 +1,13 @@
 import axios from "axios"
-const filterServiceURI = 'http://localhost:50000/api/filter';
+// const filterServiceURI = 'http://localhost:50000/api/filter';
+const filterServiceURI = process.env.VUE_APP_FILTER_SERVICE_URI;
 
-function EmptyFilterParamModel() {
-    this.name  = '';
-    this.value = '';
-}
-
-function FilterParamModel(name,value) {
+export function FilterParamModel(name,value) {
     this.name  = String(name);
     this.value = String(value);
 }
 
-function FilterParamsModel(filterParams) {
+export function FilterParamsModel(filterParams) {
     // params
     //  [
     //    ['name','value'],  ...
@@ -21,43 +17,31 @@ function FilterParamsModel(filterParams) {
 
     // default return
     this.count = 0;
-    this.items = [
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel(),
-        new EmptyFilterParamModel()
-    ];
+    this.items = [];
+    for (let i=0; i < process.env.VUE_APP_FILTER_PARAMS_COUNT; i++) {
+        this.items.push(new FilterParamModel('',''));
+    }
 
-    for (let i = 0; i < 16; i++) {
-        try {
-            let filterParam = filterParams[i];
+    if (filterParams) {
+        for (let i = 0; i < 16; i++) {
+            try {
+                let filterParam = filterParams[i];
 
-            if (filterParam) {
-                filterParamName  = filterParam[0];
-                filterParamValue = filterParam[1];
+                if (filterParam) {
+                    filterParamName  = filterParam[0];
+                    filterParamValue = filterParam[1];
 
-                if ((filterParamName) && (filterParamValue)) {
-                    this.count   = i+1;
-                    this.item[i] = 
-                        new FilterParamModel( 
-                                filterParamName,
-                                filterParamValue);
+                    if ((filterParamName) && (filterParamValue)) {
+                        this.count   = i+1;
+                        this.item[i] = 
+                            new FilterParamModel( 
+                                    filterParamName,
+                                    filterParamValue);
+                    }
                 }
             }
-        }
-        catch (e) {
+            catch (e) {
+            }
         }
     }
 }
