@@ -2,47 +2,110 @@ import axios from "axios"
 // const filterServiceURI = 'http://localhost:50000/api/filter';
 const filterServiceURI = process.env.VUE_APP_FILTER_SERVICE_URI;
 
-export function FilterParamModel(name,value) {
-    this.name  = String(name);
-    this.value = String(value);
+/*
+    Public Class ImageFilterParamModel
+        Public name As String
+        Public value As String
+        Public type As TypeImageFilterParam
+    End Class
+*/
+function iif(condition,__true__,__false__) {
+    if (condition)
+        return __true__;
+    else
+        return __false__;
+}
+
+export function FilterParamModel(name,value,type) {
+    this.name  = iif(name, name, '');
+    this.value = iif(value,value,'0');
+    this.type  = iif(type, type,  0);
 }
 
 export function FilterParamsModel(filterParams) {
     // params
     //  [
-    //    ['name','value'],  ...
+    //    ['name','value','type'],  ...
     //    ...
-    //    ['name','value']
+    //    ['name','value','type']
     //  ]
 
     // default return
     this.count = 0;
     this.items = [];
+
     for (let i=0; i < process.env.VUE_APP_FILTER_PARAMS_COUNT; i++) {
-        this.items.push(new FilterParamModel('',''));
+        this.items.push(new FilterParamModel());
     }
 
+    // fill
     if (filterParams) {
-        for (let i = 0; i < 16; i++) {
+        for (let i = 0; i < process.env.VUE_APP_FILTER_PARAMS_COUNT; i++) {
             try {
                 let filterParam = filterParams[i];
 
                 if (filterParam) {
-                    filterParamName  = filterParam[0];
-                    filterParamValue = filterParam[1];
 
-                    if ((filterParamName) && (filterParamValue)) {
+                    let filterParamName  = filterParam[0];
+                    let filterParamValue = filterParam[1];
+                    let filterParamType  = filterParam[2];
+
+                    if (filterParamName) {
+
                         this.count   = i+1;
                         this.item[i] = 
                             new FilterParamModel( 
-                                    filterParamName,
-                                    filterParamValue);
+                                filterParamName,
+                                filterParamValue,
+                                filterParamType);
                     }
                 }
             }
             catch (e) {
             }
         }
+    }
+}
+
+// (1) effettua una copia
+// (2) Entrambi i parametri devono essere già allocati
+export function copyFilterParamModel(dstFilterParamModel,srcFilterParamModel) {
+    try {
+        if ((dstFilterParamModel) && (srcFilterParamModel)) {
+            dstFilterParamModel.name  = srcFilterParamModel.name;
+            dstFilterParamModel.value = srcFilterParamModel.value;
+            dstFilterParamModel.type  = srcFilterParamModel.type;
+        }
+    }
+    catch (e) {
+        console.log("ImageFilterController function copyFilterParamModel");
+        console.log(e);
+    }
+}
+
+export function copyFilterParamsModel(dstFilterParamsModel,srcFilterParamsModel) {
+    try {
+        if ((dstFilterParamsModel) && (srcFilterParamsModel)) {
+            dstFilterParamsModel.count = srcFilterParamsModel.count;
+
+            for (let i=0; i<srcFilterParamsModel.count; i++) {
+                copyFilterParamModel(
+                    dstFilterParamsModel.items[i],
+                    srcFilterParamsModel.items[i]);
+            }
+
+        }
+        else
+        {
+            if (dstFilterParamsModel) {
+                dstFilterParamsModel.count = 0;
+            }
+        }
+
+    }
+    catch (e) {
+        console.log("ImageFilterController function copyFilterParamsModel");
+        console.log(e);
     }
 }
 
@@ -53,38 +116,48 @@ export function FilterModel(filterName,filterParamsModel,imageDataModel) {
 }
 
 /*
-    Public Class FilterParamNamesModel
-        Public count As Integer
-        Public items(FILTER_PARAMS_COUNT) As String
-    End Class
+    Public Class ImageFilterDesignModel
+        Public filterId As Integer
+        Public filterName As String
+        Public filterNote As String
+        Public filterScriptText As String
+        Public filterCustom As Boolean
 
-    Public Class FilterDesignModel
-        Public ID As Integer
-        Public Name As String
-        Public Note As String
-        Public ScriptText As String
-        Public Custom As Boolean
-
-        Public ParamNames As FilterParamNamesModel
+        Public filterParams As ImageFilterParamsModel
     End Class
 */
-export function FilterParamNamesModel() {
-    // default return
-    this.count = 0;
-    this.items = [];
-    for (let i=0; i < process.env.VUE_APP_FILTER_PARAMS_COUNT; i++) {
-        this.items.push('');
+export function FilterDesignModel() {
+    this.filterId         = -1;
+    this.filterName       = '';
+    this.filterNote       = '';
+    this.filterScriptText = '';
+    this.filterCustom     = false;
+
+    this.filterParams      = new FilterParamsModel();
+}
+
+export function IsFilterParamsModel(filterParamsModel) {
+
+    try {
+        return (
+            (filterParamsModel) && 
+            (filterParamsModel.count > 0));
+    }
+    catch (e) {
+        return false;
     }
 }
 
-export function FilterDesignModel() {
-    this.ID = -1;
-    this.Name = '';
-    this.Note = '';
-    this.ScriptText = '';
-    this.Custom = false;
+export function IsFilterDesignModel(filterDesignModel) {
 
-    this.ParamNames = new FilterParamNamesModel();
+    try {
+        return (
+            (filterDesignModel) && 
+            (filterDesignModel.filterId > 0));
+    }
+    catch (e) {
+        return false;
+    }
 }
 
 // new FilterModel(filterName,filterParams,imageContent)
@@ -95,7 +168,7 @@ export function apply0P(filterName,imageDataModel,
         successFunction,errorFunction);
 }
 
-export function applyCP(filterName,filterParams,imageDataModel,
+export function applyCP(filterName,filterParamsModel,imageDataModel,
     successFunction,errorFunction) {
 
     /*
@@ -106,7 +179,7 @@ export function applyCP(filterName,filterParams,imageDataModel,
         End Class
     */
     let filterModel = 
-        new FilterModel(filterName,filterParams,imageDataModel);
+        new FilterModel(filterName,filterParamsModel,imageDataModel);
 
     axios.post(filterServiceURI + '/apply',filterModel)
         .then(function (result){
@@ -179,10 +252,10 @@ export function getFilterList(successFunction,errorFunction) {
         successFunction(FilterDesignModel)
         errorFunction()
 */
-export function getFilterById(idFilter,successFunction,errorFunction) {
+export function getFilterById(filterId,successFunction,errorFunction) {
 
     axios
-      .get(filterServiceURI + "/" + idFilter)
+      .get(filterServiceURI + "/" + filterId)
       .then(function (result){
         if (typeof successFunction === 'function') {
             try {
@@ -211,7 +284,7 @@ export function getFilterById(idFilter,successFunction,errorFunction) {
         successFunction(FilterDesignModel)
         errorFunction()
 */
-export function getFilterByName(nameFilter,successFunction,errorFunction) {
+export function getFilterByName(filterName,successFunction,errorFunction) {
     let getName = function (text) {
         let ret = "";
 
@@ -231,7 +304,7 @@ export function getFilterByName(nameFilter,successFunction,errorFunction) {
 
         try {
             if (filterItem)
-                ret = getName(filterItem.Name);
+                ret = getName(filterItem.filterName);
         }
         catch (e) {
 
@@ -242,41 +315,58 @@ export function getFilterByName(nameFilter,successFunction,errorFunction) {
 
     let filterSuccessFunction = function(filterList) {
         // debug
+        //console.log("getFilterList");
         //console.log(filterList);
 
         let filterFound = false;
         let filterItem  = {};
-        let filterName  = "";
 
-        let paramNameFilter = getName(nameFilter);
+        let searchingFilterName = getName(filterName);
 
         try {
-            let length = filterList.length;
+            if (filterList) {
+                
+                if (filterList.length > 0) {
+                    for (let i = 0; i < filterList.length; i++) {
+                        /*
+                            Public Class Filter
+                                Public Property ID As Integer
+                                Public Property Name As String
+                                Public Property Note As String
+                                Public Property ScriptText As String
+                                Public Property Custom As Boolean
 
-            if (length > 0) {
-                for (let i = 0; i < length; i++) {
-                    /*
-                        Public Class Filter
-                            Public Property ID As Integer
-                            Public Property Name As String
-                            Public Property Note As String
-                            Public Property ScriptText As String
-                            Public Property Custom As Boolean
+                            End Class
+                        */
+                        filterItem = filterList[i];
 
-                        End Class
-                    */
-                    filterItem = filterList[i];
-                    filterName = getFilterName(filterItem);
+                        let name = getFilterName(filterItem);
 
-                    if (filterName !== "") {
-                        if (filterName === paramNameFilter) {
-                            filterFound = true;
-                            break;
+                        //console.log("filterItem");
+                        //console.log(filterItem);
+
+                        //console.log("filterItemName");
+                        //console.log(filterItemName);
+
+                        if (name !== "") {
+                            if (name === searchingFilterName) {
+                                //console.log("getFilterByName found filter!");
+                                //console.log(filterItem);
+
+                                filterFound = true;
+                                break;
+                            }
                         }
                     }
                 }
+
             }
-        } finally {
+        } 
+        catch (e) {
+            console.log("getFilterByName Error!");
+            console.log(e);
+        }
+        finally {
 
             if (filterFound == true) {
                 try {

@@ -20,19 +20,19 @@
         </ShowImageDialog>
       </CCol>
     </CRow>
+
     <CRow>
-      <ImageFilterParams class="section" v-if="isFilterParamsModel()"
-        text="Filter Params"
+      <ImageFilterParams class="section" text="Filter Params"
         :filterParamsModel="filterParamsModel"
         :onChange="onChangeFilterParams">
       </ImageFilterParams>
     </CRow>
     <CRow>
-      <ImageFilterDesign class="section" v-if="isFilterDesignModel()"
-        text="Script Text"
+      <ImageFilterDesign class="section" text="Script Text"
         :filterDesignModel="filterDesignModel">
       </ImageFilterDesign>
     </CRow>
+
   </CContainer>
 </template>
 
@@ -72,8 +72,8 @@ export default {
     return {
       imageDataModelSource      : null,
       imageDataModelDestination : null,
-      filterDesignModel         : new FilterDesignModel(),
-      filterParamsModel         : new FilterParamsModel(),
+      filterDesignModel         : null,
+      filterParamsModel         : null,
     }
   },
   props: {
@@ -103,32 +103,7 @@ export default {
     imageFilterName: function() {
       return "ImageFilter" + this.name;
     },
-    isFilterParamsModel: function() {
-      let that = this;
-
-      try {
-        return (
-          (that.filterParamsModel) && 
-          (that.filterParamsModel.count > 0));
-      }
-      catch (e) {
-        return false;
-      }
-    },
-    isFilterDesignModel: function() {
-      let that = this;
-
-      try {
-        return (
-          (that.filterDesignModel) && 
-          (that.filterDesignModel.ID > 0));
-        }
-      catch (e) {
-        return false;
-      }
-    },
     onChangeFilterParams: function(filterParamsModel,index) {
-
 
     },
     onClickSourceImage: function() {
@@ -197,40 +172,38 @@ export default {
 
 
     },
+    clone: function(obj) {
+        if (null == obj || "object" != typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
+    },
     refreshFilterDesignModel: function (filterName) {
       let that = this;
 
       // init
       that.filterDesignModel = null;
-      that.filterParamsModel = new FilterParamsModel();
+      that.filterParamsModel = null;
 
       // filter
       getFilterByName(filterName,
         function (filterDesignModel) {
           try {
-
+            
             if (filterDesignModel) {
-              that.filterDesignModel = filterDesignModel;
+              that.filterDesignModel = that.clone(filterDesignModel);
+              that.filterParamsModel = that.clone(filterDesignModel.filterParams);
 
-              if (that.filterDesignModel.ParamNames) {
+                //console.log("that.filterDesignModel.filterParams");
+                //console.log(filterDesignModel.filterParams);
 
-                if (that.filterDesignModel.ParamNames.count > 0) {
+                //console.log("that.filterParamsModel");
+                //console.log(that.filterParamsModel);
 
-                  // filterParamsModel.count
-                  that.filterParamsModel.count = that.filterDesignModel.ParamNames.count;
-
-                  // filterParamsModel.items
-                  for (let i=0; i < that.filterDesignModel.ParamNames.count; i++) {
-                    let filterParamModel = that.filterParamsModel.items[i];
-                    let paramName        = that.filterDesignModel.ParamNames.items[i];
-
-                    filterParamModel.name = paramName;
-                  }
-
-                  // enable component
-                  that.refreshComponentStatus(true);
-                }
-              }
+              // enable component
+              that.refreshComponentStatus(true);
             }
 
           } 
@@ -245,7 +218,7 @@ export default {
   },
   watch: { 
     name: function (filterName) {
-      this.getFilterDesignModel(filterName);
+      this.refreshFilterDesignModel(filterName);
     }
   }
 }
