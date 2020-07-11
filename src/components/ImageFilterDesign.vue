@@ -15,30 +15,32 @@
     End Class
 -->
 <template>
-  <CContainer v-show="isFilterDesignModel()">
+  <CContainer v-show="isFilterDesignModel() && isAdmin()">
     <CRow>
       <span class="text" @click="showComponent()">{{text}}</span>
     </CRow>
-    <form v-show="visibleImageFilterDesignBody">
-        <div class="form-row">
-            <div class="form-group col-3">
-                <label for="imageFilterDesignFilterId"><span class="fieldLabel">Filter Id</span></label>
-                <input type="text" class="form-control" v-model="m_filterDesignModel.filterId" id="imageFilterDesignFilterId" placeholder="0" disabled>
+    <div v-show="visibleImageFilterDesignBody">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-3">
+                    <label for="imageFilterDesignFilterId"><span class="fieldLabel">Filter Id</span></label>
+                    <input type="text" class="form-control" v-model="m_filterDesignModel.filterId" id="imageFilterDesignFilterId" placeholder="0" disabled>
+                </div>
+                <div class="form-group  col-2">
+                    <label class="form-check-label" for="imageFilterDesignCustom"><span class="fieldLabel">Native matlab function</span></label>
+                    <input class="form-check-input" type="checkbox" v-model="m_filterDesignModel.filterCustom" id="imageFilterDesignCustom" disabled>
+                </div>
             </div>
-            <div class="form-group  col-2">
-                <label class="form-check-label" for="imageFilterDesignCustom"><span class="fieldLabel">Native matlab function</span></label>
-                <input class="form-check-input" type="checkbox" v-model="m_filterDesignModel.filterCustom" id="imageFilterDesignCustom" disabled>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label class="form-check-label" for="imageFilterDesignScriptText"><span class="fieldLabel">Script code</span></label>
+                    <textarea class="form-control fieldScriptText" v-model="m_filterDesignModel.filterScriptText" placeholder="matlab script" id="imageFilterDesignScriptText" disabled></textarea>
+                </div>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-12">
-                <label class="form-check-label" for="imageFilterDesignScriptText"><span class="fieldLabel">Script code</span></label>
-                <textarea class="form-control fieldScriptText" v-model="m_filterDesignModel.filterScriptText" placeholder="matlab script" id="imageFilterDesignScriptText" disabled></textarea>
-            </div>
-        </div>
-        <CButton class="button" color="primary" disabled>Modify</CButton>
-        <CButton class="button" color="primary" disabled>Save</CButton>
-    </form>
+            <CButton class="button" color="primary" disabled>Modify</CButton>
+            <CButton class="button" color="primary" disabled>Save</CButton>
+        </form>
+    </div>
   </CContainer>
 </template>
 
@@ -64,6 +66,10 @@ export default {
         filterDesignModel: {
             type: Object,
             default: null,
+        },
+        admin: {
+            type: Boolean,
+            default: true
         }
     },
     mounted: function() {
@@ -74,6 +80,20 @@ export default {
         }
     },
     methods: {
+        isAdmin: function () {
+            let that = this;
+
+            let ret = false;
+
+            try {
+                ret = that.admin;
+            }
+            catch (e) {
+
+            }
+
+            return ret;
+        },
         isFilterDesignModel: function() {
             let ret = 
                 IsFilterDesignModel(
@@ -101,9 +121,8 @@ export default {
         filterDesignModel: function (nv) {
             let that = this;
 
-            that.filterDesignModel = nv;
-            if (that.filterDesignModel) {
-                that.m_filterDesignModel = that.clone(that.filterDesignModel);
+            if (nv) {
+                that.m_filterDesignModel = that.clone(nv);
             }
         }
     }
@@ -128,4 +147,5 @@ export default {
         margin-right: 5px;
         width: 100px;
     }
+
 </style>

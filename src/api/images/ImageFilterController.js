@@ -3,6 +3,18 @@ import axios from "axios"
 const filterServiceURI = process.env.VUE_APP_FILTER_SERVICE_URI;
 
 /*
+    Utility
+*/
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+
+/*
     Public Class ImageFilterParamModel
         Public name As String
         Public value As String
@@ -161,14 +173,7 @@ export function IsFilterDesignModel(filterDesignModel) {
 }
 
 // new FilterModel(filterName,filterParams,imageContent)
-export function apply0P(filterName,imageDataModel,
-    successFunction,errorFunction) {
-
-    applyCP(filterName,[],imageDataModel,
-        successFunction,errorFunction);
-}
-
-export function applyCP(filterName,filterParamsModel,imageDataModel,
+export function applyImageFilter(filterName,filterParamsModel,imageDataModel,
     successFunction,errorFunction) {
 
     /*
@@ -179,7 +184,10 @@ export function applyCP(filterName,filterParamsModel,imageDataModel,
         End Class
     */
     let filterModel = 
-        new FilterModel(filterName,filterParamsModel,imageDataModel);
+        new FilterModel(
+            filterName,
+            iif(filterParamsModel,filterParamsModel,new FilterParamsModel),
+            imageDataModel);
 
     axios.post(filterServiceURI + '/apply',filterModel)
         .then(function (result){

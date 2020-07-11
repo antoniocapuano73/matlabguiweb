@@ -29,7 +29,8 @@
     </CRow>
     <CRow>
       <ImageFilterDesign class="section" text="Script Text"
-        :filterDesignModel="filterDesignModel">
+        :filterDesignModel="filterDesignModel"
+        :admin="true">
       </ImageFilterDesign>
     </CRow>
 
@@ -45,13 +46,20 @@ import ImageFilterParams from '@/components/ImageFilterParams.vue';
 import ImageFilterDesign from '@/components/ImageFilterDesign.vue';
 
 // import code
-import {ImageDataModel} from '@/api/models/ApiGlobalModels.js';
-import {loadImage}      from '@/lib/images/TagImages.js';
 import {
-    FilterParamsModel,
-    FilterDesignModel,
-    apply0P,
-    getFilterByName
+  ImageDataModel,
+  IsImageDataModel
+} from '@/api/models/ApiGlobalModels.js';
+
+import {
+  loadImage
+}      from '@/lib/images/TagImages.js';
+
+import {
+  FilterParamsModel,
+  FilterDesignModel,
+  applyImageFilter,
+  getFilterByName
 } from '@/api/images/ImageFilterController.js';
 
 import {
@@ -104,7 +112,9 @@ export default {
       return "ImageFilter" + this.name;
     },
     onChangeFilterParams: function(filterParamsModel,index) {
+      let that = this;
 
+      that.filterParamsModel = filterParamsModel;
     },
     onClickSourceImage: function() {
 
@@ -114,25 +124,40 @@ export default {
       this.imageDataModelSource = imageDataModel;
 
       // clear destination image
-      this.imageDataModelDestination = null;
+      this.clearImageDataModelDestination();
+    },
+    clearImageDataModelDestination: function() {
+      // clear destination image
+      this.imageDataModelDestination = new ImageDataModel();
     },
     onUpload: function() {
       let that = this;
 
       // image destination
       let tagImageDestination = document.getElementById('imageDestination');
-      that.imageDataModelDestination = null;
+      //that.imageDataModelDestination = null;
 
       // filter
       if (that.imageDataModelSource !== null) {
-        apply0P(that.name,that.imageDataModelSource, 
+        applyImageFilter(that.name,that.filterParamsModel,that.imageDataModelSource, 
           function (imageDataModel) {
 
+            //console.log("imageDataModel");
             //console.log(imageDataModel);
 
-            that.imageDataModelDestination = imageDataModel;
-            setImageData(tagImageDestination,imageDataModel);
+            if (IsImageDataModel(imageDataModel)) {
+              that.imageDataModelDestination = imageDataModel;
+              setImageData(tagImageDestination,imageDataModel);
+            } 
+            else {
+              // clear destination image
+              that.clearImageDataModelDestination();
+            }
 
+        },
+          function (e) {
+            // clear destination image
+            that.clearImageDataModelDestination();
         });
 
       }

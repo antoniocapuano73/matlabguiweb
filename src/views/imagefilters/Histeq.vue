@@ -1,7 +1,7 @@
 <template>
   <CContainer>
     <ImageFilter
-      name="Histeq"
+      name="histeq"
       textButtonSelectImage="Select Image" 
       textButtonFilterImage="Filter Image">
     </ImageFilter>
@@ -14,7 +14,7 @@
 import ImageFilter from '@/components/ImageFilter.vue';
 
 export default {
-  name: 'Histeq',
+  name: 'histeq',
   components: {
     ImageFilter
   },

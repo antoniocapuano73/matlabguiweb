@@ -27,6 +27,11 @@
 // import UploadImage from 'vue-upload-image';
 import {setImageData} from '@/lib/images/TagImages.js'
 
+import {
+  ImageDataModel,
+  IsImageDataModel
+} from '@/api/models/ApiGlobalModels.js';
+
 export default {
   name: 'ShowImageDialog',
   data: function () {
@@ -109,22 +114,35 @@ export default {
     }
   },
   watch: { 
-    imageDataModel: function (imageDataModel) {
-      let that = this;
-      let tagImage = document.getElementById('imageShowImageDialog');
+    imageDataModel: {immediate: true, deep: true,
+      handler(imageDataModel, oldValue) {
+        //console.log("watch imageDataModel");
+        //console.log(imageDataModel);
 
-      if (imageDataModel) {
-        tagImage.onload = that.showedImage();
+        let that = this;
+        let tagImage = document.getElementById('imageShowImageDialog');
 
-        setImageData(tagImage,imageDataModel);
+        try {
+          if (IsImageDataModel(imageDataModel)) {
+            tagImage.onload = that.showedImage();
+
+            setImageData(tagImage,imageDataModel);
+          }
+          else {
+            // hide spinner
+            that.visibleSpinner = false;
+
+            if (tagImage)
+              tagImage.src="";
+          }
+        }
+        catch (e) {
+          // ERR
+          console.log('ShowImageDialog onLoad error!');
+          console.log(e);
+        }
+
       }
-      else {
-        // hide spinner
-        //that.visibleSpinner = false;
-        tagImage.src="";
-      }
-
-
     }
   }
 }

@@ -15,7 +15,6 @@
     <CRow>
       <span class="text" @click="showComponent()">{{text}}</span>
     </CRow>
-
     <div v-show="visibleImageFilterParamsBody">
         <CRow v-for="(filterParamModel,index) in m_filterParamsModel.items" :key="index" 
             v-show="(index < m_filterParamsModel.count)"
@@ -118,8 +117,7 @@ export default {
         filterParamsModel: function (nv) {
             let that = this;
 
-            that.filterParamsModel = nv;
-            copyFilterParamsModel(that.m_filterParamsModel,that.filterParamsModel);
+            copyFilterParamsModel(that.m_filterParamsModel,nv);
         }
     }
 }
