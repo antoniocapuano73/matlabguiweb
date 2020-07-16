@@ -3,15 +3,16 @@
     <CRow>
       <h1 class="title">{{ name }}</h1>
     </CRow>
+    
     <CRow>
-      <CCol Cols="6">
+      <CCol cols="6">
         <OpenImageDialog
           :textButton="textButtonSelectImage"
           :onClick="onClickSourceImage"
           :onLoad ="onLoadSourceImage">
         </OpenImageDialog>
       </CCol>
-      <CCol Cols="6">
+      <CCol>
         <ShowImageDialog
           :textButton="textButtonFilterImage"
           :imageDataModel="imageDataModelDestination"

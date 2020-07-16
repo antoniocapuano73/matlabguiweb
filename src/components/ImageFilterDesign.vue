@@ -16,31 +16,31 @@
 -->
 <template>
   <CContainer v-show="isFilterDesignModel() && isAdmin()">
-    <CRow>
-      <span class="text" @click="showComponent()">{{text}}</span>
+    <CRow class="text" @click="showComponent()">
+      {{text}}
     </CRow>
-    <div v-show="visibleImageFilterDesignBody">
-        <form>
-            <div class="form-row">
-                <div class="form-group col-3">
-                    <label for="imageFilterDesignFilterId"><span class="fieldLabel">Filter Id</span></label>
-                    <input type="text" class="form-control" v-model="m_filterDesignModel.filterId" id="imageFilterDesignFilterId" placeholder="0" disabled>
-                </div>
-                <div class="form-group  col-2">
-                    <label class="form-check-label" for="imageFilterDesignCustom"><span class="fieldLabel">Native matlab function</span></label>
-                    <input class="form-check-input" type="checkbox" v-model="m_filterDesignModel.filterCustom" id="imageFilterDesignCustom" disabled>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-12">
-                    <label class="form-check-label" for="imageFilterDesignScriptText"><span class="fieldLabel">Script code</span></label>
-                    <textarea class="form-control fieldScriptText" v-model="m_filterDesignModel.filterScriptText" placeholder="matlab script" id="imageFilterDesignScriptText" disabled></textarea>
-                </div>
-            </div>
-            <CButton class="button" color="primary" disabled>Modify</CButton>
-            <CButton class="button" color="primary" disabled>Save</CButton>
-        </form>
-    </div>
+    <CContainer v-show="visibleImageFilterDesignBody">
+        <CRow class="fieldLabel">
+            <CCol class="col-2">Filter Id</CCol>
+            <CCol class="col-1">
+                <input v-model="m_filterDesignModel.filterId" placeholder="0" disabled>
+            </CCol>
+        </CRow>
+
+        <CRow class="fieldLabel">
+            <CCol class="col-2">Native matlab function</CCol>
+            <CCol class="col-1">
+                <input type="checkbox" v-model="m_filterDesignModel.filterCustom" disabled>
+            </CCol>
+        </CRow>
+
+        <CRow class="fieldLabel">
+            <CCol class="col-2">Script code</CCol>
+            <CCol>
+                <textarea class="fieldScriptText" v-model="m_filterDesignModel.filterScriptText" disabled></textarea>
+            </CCol>
+        </CRow>
+    </CContainer>
   </CContainer>
 </template>
 
@@ -114,7 +114,8 @@ export default {
         showComponent: function() {
             let that = this;
 
-            that.visibleImageFilterDesignBody = !that.visibleImageFilterDesignBody;
+            that.visibleImageFilterDesignBody = 
+                !that.visibleImageFilterDesignBody;
         }
     },
     watch: { 
@@ -135,12 +136,13 @@ export default {
         font-size: 125%;
     }
     .fieldLabel {
+        margin-top: 5px;
         font-size: 105%;
     }
     .fieldScriptText {
         margin-top: 5px;
-        height: 250px;
         font-size: 105%;
+        width: 100%;
     }
     .button {
         margin-top: 5px;

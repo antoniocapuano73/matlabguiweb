@@ -15,22 +15,23 @@
     <CRow>
       <span class="text" @click="showComponent()">{{text}}</span>
     </CRow>
-    <div v-show="visibleImageFilterParamsBody">
+    <CContainer v-show="visibleImageFilterParamsBody">
+
         <CRow v-for="(filterParamModel,index) in m_filterParamsModel.items" :key="index" 
             v-show="(index < m_filterParamsModel.count)"
             class="filterParamRow">
         <CCol class="col-3">
             <span class="filterParamName">{{ filterParamModel.name}}</span>
         </CCol>
+        
         <CCol class="col-1">
             <input v-model="filterParamModel.value" 
                 :placeholder="filterParamModel.name" 
                 @keydown="onChangeFilterParam(index)">
         </CCol>
-        <CCol class="col-8">
-        </CCol>
+
         </CRow>
-    </div>
+    </CContainer>
   </CContainer>
 </template>
 
