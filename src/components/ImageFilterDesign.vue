@@ -15,29 +15,30 @@
     End Class
 -->
 <template>
-  <CContainer v-show="isFilterDesignModel() && isAdmin()">
+  <CContainer id="ImageFilterDesign" v-show="isFilterDesignModel() && isAdmin()">
     <CRow class="text" @click="showComponent()">
       {{text}}
     </CRow>
     <CContainer v-show="visibleImageFilterDesignBody">
         <CRow class="fieldLabel">
-            <CCol class="col-2">Filter Id</CCol>
-            <CCol class="col-1">
+            <CCol col="2">Filter Id</CCol>
+            <CCol col="1">
                 <input v-model="m_filterDesignModel.filterId" placeholder="0" disabled>
             </CCol>
         </CRow>
 
         <CRow class="fieldLabel">
-            <CCol class="col-2">Native matlab function</CCol>
-            <CCol class="col-1">
+            <CCol col="2">Native matlab function</CCol>
+            <CCol col="1">
                 <input type="checkbox" v-model="m_filterDesignModel.filterCustom" disabled>
             </CCol>
         </CRow>
 
         <CRow class="fieldLabel">
-            <CCol class="col-2">Script code</CCol>
+            <CCol col="2">Script code</CCol>
             <CCol>
-                <textarea class="fieldScriptText" v-model="m_filterDesignModel.filterScriptText" disabled></textarea>
+                <textarea class="fieldScriptText" v-model="m_filterDesignModel.filterScriptText" disabled>
+                </textarea>
             </CCol>
         </CRow>
     </CContainer>

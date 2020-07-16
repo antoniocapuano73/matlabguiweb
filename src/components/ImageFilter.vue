@@ -3,8 +3,8 @@
     <CRow>
       <h1 class="title">{{ name }}</h1>
     </CRow>
-    
-    <CRow>
+
+    <CRow :id="rowImagesName()">
       <CCol cols="6">
         <OpenImageDialog
           :textButton="textButtonSelectImage"
@@ -112,6 +112,9 @@ export default {
     imageFilterName: function() {
       return "ImageFilter" + this.name;
     },
+    rowImagesName: function() {
+      return "ImageFilter" + this.name + ".RowImages";
+    },
     onChangeFilterParams: function(filterParamsModel,index) {
       let that = this;
 
@@ -168,7 +171,7 @@ export default {
     },
     refreshComponentStatus: function (enabled) {
       let that = this;
-      let tagName = that.imageFilterName();
+      let idParent = that.rowImagesName();
 
       let disabled = !enabled;
 
@@ -188,7 +191,7 @@ export default {
             }
         };
 
-        setNode(document.getElementById(tagName),disabled);
+        setNode(document.getElementById(idParent),disabled);
 
       }
       catch (e) {
