@@ -138,7 +138,7 @@ export default {
       let that = this;
 
       // image destination
-      let tagImageDestination = document.getElementById('imageDestination');
+      //let tagImageDestination = document.getElementById('imageDestination');
       //that.imageDataModelDestination = null;
 
       // filter
@@ -151,7 +151,7 @@ export default {
 
             if (IsImageDataModel(imageDataModel)) {
               that.imageDataModelDestination = imageDataModel;
-              setImageData(tagImageDestination,imageDataModel);
+              //setImageData(tagImageDestination,imageDataModel);
             } 
             else {
               // clear destination image
