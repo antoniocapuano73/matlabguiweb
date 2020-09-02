@@ -123,7 +123,7 @@ export function copyFilterParamsModel(dstFilterParamsModel,srcFilterParamsModel)
 
 export function FilterModel(filterName,filterParamsModel,imageDataModel) {
     this.filterName      = filterName;
-    this.filterParams    = filterParamsModel;
+    this.filterParams    = iif(filterParamsModel,filterParamsModel,new FilterParamsModel);
     this.filterImageData = imageDataModel;
 }
 
@@ -186,7 +186,7 @@ export function applyImageFilter(filterName,filterParamsModel,imageDataModel,
     let filterModel = 
         new FilterModel(
             filterName,
-            iif(filterParamsModel,filterParamsModel,new FilterParamsModel),
+            filterParamsModel,
             imageDataModel);
 
     axios.post(filterServiceURI + '/apply',filterModel)
